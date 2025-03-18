@@ -1,0 +1,56 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AuthController = void 0;
+const data_source_1 = require("../data-source");
+const User_entity_1 = require("../entity/User.entity");
+const encrypt_1 = require("../helpers/encrypt");
+const UserCount_entity_1 = require("../entity/UserCount.entity");
+class AuthController {
+    static login(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { email, password } = req.body;
+                if (!email || !password) {
+                    res
+                        .status(500)
+                        .json({ message: "email and password required" });
+                    return;
+                }
+                const userRepository = data_source_1.AppDataSource.getRepository(User_entity_1.User);
+                const user = yield userRepository.findOne({ where: { email } });
+                const isPasswordValid = encrypt_1.encrypt.comparepassword(user.password, password);
+                if (!user || !isPasswordValid) {
+                    res
+                        .status(404)
+                        .json({ message: "User not found" });
+                    return;
+                }
+                const token = encrypt_1.encrypt.generateToken({ id: user.id });
+                const userCountRepository = data_source_1.AppDataSource.getRepository(UserCount_entity_1.UserCount);
+                const newUserCount = userCountRepository.create({
+                    user_id: user.id,
+                    login_date: new Date(),
+                });
+                yield userCountRepository.save(newUserCount);
+                res.status(200).json({ message: "Login successful", user, token });
+                return;
+            }
+            catch (error) {
+                console.error(error);
+                res.status(500).json({ message: "Internal server error" });
+                return;
+            }
+        });
+    }
+}
+exports.AuthController = AuthController;
+//# sourceMappingURL=auth.controller.js.map
