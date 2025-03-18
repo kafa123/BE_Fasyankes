@@ -21,6 +21,7 @@ const authorization = (roles) => {
             });
             if (!user || !roles.includes(user.role)) {
                 res.status(403).json({ message: "Forbidden" });
+                return;
             }
             next();
         }

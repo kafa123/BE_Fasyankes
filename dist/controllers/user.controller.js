@@ -29,10 +29,9 @@ class UserController {
             user.role = role;
             const userRepository = data_source_1.AppDataSource.getRepository(User_entity_1.User);
             yield userRepository.save(user);
-            const token = encrypt_1.encrypt.generateToken({ id: user.id });
             res
                 .status(200)
-                .json({ message: "User created successfully", token, user });
+                .json({ message: "User created successfully", user });
             return;
         });
     }

@@ -13,6 +13,7 @@ export const authorization = (roles: string[]) => {
 
       if (!user || !roles.includes(user.role)) {
         res.status(403).json({ message: "Forbidden" });
+        return;
       }
 
       next();
