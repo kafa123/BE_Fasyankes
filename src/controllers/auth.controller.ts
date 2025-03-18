@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User.entity";
 import { encrypt } from "../helpers/encrypt";
+import { UserCount } from "../entity/UserCount.entity";
 
 export class AuthController {
 
@@ -28,6 +29,15 @@ export class AuthController {
       }
 
       const token = encrypt.generateToken({ id: user.id });
+
+      const userCountRepository = AppDataSource.getRepository(UserCount);
+
+      const newUserCount = userCountRepository.create({
+        user_id: user.id,
+        login_date: new Date(),
+      });
+
+      await userCountRepository.save(newUserCount);
 
       res.status(200).json({ message: "Login successful", user, token });
       return;
