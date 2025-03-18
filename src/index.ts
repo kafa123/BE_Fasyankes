@@ -1,11 +1,11 @@
 import { AppDataSource } from "./data-source"
-import { User } from "./entity/User"
 import * as express from "express";
 import * as dotenv from "dotenv";
 import { Request, Response } from "express";
 import { userRouter } from "./routes/user.routes";
 import "reflect-metadata";
 import { errorHandler } from "./middleware/errorHandler";
+
 dotenv.config();
 
 const app = express();

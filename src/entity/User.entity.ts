@@ -19,6 +19,15 @@ import {
   
     @Column({ nullable: false })
     password: string;
+
+    @Column({ nullable: true })
+    profesion: string;
+
+    @Column({ nullable: true })
+    institute: string;
+
+    @Column({ nullable: false })
+    phone_number: string;
   
     @Column({ default: "user" })
     role: string;

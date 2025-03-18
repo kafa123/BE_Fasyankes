@@ -7,12 +7,15 @@ import * as cache from "memory-cache";
 export class UserController {
   
   static async signup(req: Request, res: Response) {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, profesion, institute, phone_number, role } = req.body;
     const encryptedPassword = await encrypt.encryptpass(password);
     const user = new User();
     user.name = name;
     user.email = email;
     user.password = encryptedPassword;
+    user.profesion = profesion;
+    user.institute = institute;
+    user.phone_number = phone_number;
     user.role = role;
 
     const userRepository = AppDataSource.getRepository(User);
@@ -23,6 +26,7 @@ export class UserController {
     res
       .status(200)
       .json({ message: "User created successfully", token, user });
+    return;
   }
 
   static async getUsers(_: Request, res: Response) {

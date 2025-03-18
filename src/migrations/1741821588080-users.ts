@@ -6,10 +6,13 @@ export class Users1741821588080 implements MigrationInterface {
         await queryRunner.query(`
           CREATE TABLE "users" (
             "id" SERIAL PRIMARY KEY,
-            "name" character varying NOT NULL,
-            "email" character varying NOT NULL,
-            "password" character varying NOT NULL,
-            "role" character varying NOT NULL DEFAULT 'user',
+            "name" varchar(50) NOT NULL,
+            "email" varchar(50) NOT NULL,
+            "password" varchar(200) NOT NULL,
+            "profesion" varchar(50) NULL,
+            "institute" varchar(50) NULL,
+            "phone_number" varchar(50) NULL,
+            "role" varchar(20) NOT NULL DEFAULT 'user',
             "createdAt" TIMESTAMP NOT NULL DEFAULT now(),
             "updatedAt" TIMESTAMP NOT NULL DEFAULT now()
           )
