@@ -1,9 +1,6 @@
 import * as express from "express";
-import upload  from "../middleware/upload"
 import { authentification } from "../middleware/authentification";
-import { UserController } from "../controllers/user.controller";
 import { authorization } from "../middleware/authorization";
-import { AuthController } from "../controllers/auth.controller";
 import { AdminController } from "../controllers/admin.controller";
 
 const Router = express.Router();
@@ -14,6 +11,13 @@ Router.get(
   authorization(["admin"]),
   AdminController.getUserCounts
 );
+
+Router.post(
+  "/post-simulation",
+  authentification,
+  authorization(["admin"]),
+
+)
 
 
 export { Router as AdminRouter };
