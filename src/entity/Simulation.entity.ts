@@ -4,7 +4,9 @@ import {
     Column,
     CreateDateColumn,
     UpdateDateColumn,
+    OneToMany
   } from "typeorm";
+import { PersonalCase } from "./PersonalCase.entity";
   
   @Entity({ name: "simulations" })
   export class Simulation {
@@ -41,4 +43,7 @@ import {
   
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @OneToMany(() => PersonalCase, (personalCase) => personalCase.simulation)
+    personalCases: PersonalCase[];
   }
