@@ -27,8 +27,11 @@ import {
     })
     category: string;
 
+    @Column({ nullable: false})
+    diagnose:String;
+
     @Column({ nullable: false })
-    case: string;
+    case_type: string;
 
     @Column({ nullable: false })
     payment_method: string;
