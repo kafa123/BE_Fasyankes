@@ -17,7 +17,7 @@ export class PatientVisitData {
     patient_id: number;
 
     @Column({ nullable: false })
-    admision_time: Timestamp;
+    admision_time: Date;
 
     @Column({
       type: "enum",
