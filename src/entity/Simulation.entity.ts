@@ -4,7 +4,12 @@ import {
     Column,
     CreateDateColumn,
     UpdateDateColumn,
+    OneToMany,
+    OneToOne
   } from "typeorm";
+import { PersonalCase } from "./PersonalCase.entity";
+import { Scenario } from "./Scenario.entity";
+import { Patient } from "./Patient.entity";
   
   @Entity({ name: "simulations" })
   export class Simulation {
@@ -44,4 +49,13 @@ import {
   
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @OneToMany(() => PersonalCase, (personalCase) => personalCase.simulation)
+    personalCases: PersonalCase[];
+
+    @OneToOne(() => Scenario, (scenario) => scenario.simulation)
+    scenario: Scenario;
+
+    @OneToOne(() => Patient, (patient) => patient.simulation)
+    patient: Patient;
   }

@@ -1,0 +1,82 @@
+import {
+  Column,
+    Entity,
+    JoinColumn,
+    OneToOne,
+    PrimaryGeneratedColumn,
+
+  } from "typeorm";
+import { Simulation } from "./Simulation.entity";
+import { ValueBelief } from "./ValueBelief.entity";
+import { PrivacyRequest } from "./PrivacyRequest.entity";
+import { HealthInformationPatient } from "./HealthInformationPatient.entity";
+import { PatientDetail } from "./PatientDetail.entity";
+import { PatientVisitData } from "./PatientVisitData.entity";
+import { PatientReferralData } from "./PatientReferralData.entity";
+
+@Entity({ name: "patients" })
+export class Patient {
+    @PrimaryGeneratedColumn("increment")
+    id: number;
+
+    @Column({ nullable: false })
+    simulation_id: number;
+
+    @Column({ nullable: false })
+    nik: string;
+
+    @Column({ nullable: false })
+    name: string;
+
+    @Column({
+      type: "enum",
+      enum: ["L", "P"],
+      enumName: "patients_gender_enum",
+      nullable: false,
+    })
+    category: string;
+
+    @Column({ nullable: false })
+    date_of_birth: Date;
+
+    @Column({ nullable: false })
+    place_of_birth: string;
+
+    @Column({ nullable: true })
+    phone_number: string;
+
+    @Column({ nullable: true })
+    address: string;
+
+    @Column({ nullable: false })
+    province: string;
+
+    @Column({ nullable: false })
+    city: string;
+
+    @Column({ nullable: false })
+    district: string;
+
+    @OneToOne(() => Simulation, (simulation) => simulation.patient, { onDelete: "CASCADE" })
+    @JoinColumn({ name: "simulation_id" })
+    simulation: Simulation;
+
+    @OneToOne(() => ValueBelief, (valueBelief) => valueBelief.patient)
+    valueBelief: ValueBelief;
+
+    @OneToOne(() => PrivacyRequest, (privacyRequest) => privacyRequest.patient)
+    privacyRequest: PrivacyRequest;
+
+    @OneToOne(() => HealthInformationPatient, (healthInformationPatient) => healthInformationPatient.patient)
+    healthInformationPatient: HealthInformationPatient;
+
+    @OneToOne(() => PatientDetail, (patientDetail) => patientDetail.patient)
+    patientDetail: PatientDetail;
+
+    @OneToOne(() => PatientVisitData, (patientVisitData) => patientVisitData.patient)
+    patientVisitData: PatientVisitData;
+
+    @OneToOne(() => PatientReferralData, (patientReferralData) => patientReferralData.patient)
+    patientReferralData: PatientReferralData;
+
+}

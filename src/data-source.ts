@@ -4,6 +4,7 @@ import { DataSource } from "typeorm";
 import * as dotenv from "dotenv";
 import { User } from "./entity/User.entity";
 import { UserCount } from "./entity/UserCount.entity";
+import { PersonalCase } from "./entity/PersonalCase.entity";
 import { Simulation } from "./entity/Simulation.entity";
 
 dotenv.config();
@@ -20,7 +21,7 @@ export const AppDataSource = new DataSource({
   database: DB_DATABASE,
   synchronize: NODE_ENV === "dev" ? false : false,
   logging: NODE_ENV === "dev" ? false : false,
-  entities: [User, UserCount,Simulation],
+  entities: [__dirname + '/entity/*.entity.{ts,js}'],
   migrations: [__dirname + "/migrations/*.ts"],
   subscribers: [],
 });
