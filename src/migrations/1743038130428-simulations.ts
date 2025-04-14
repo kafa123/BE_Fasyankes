@@ -33,7 +33,7 @@ export class Simulations1743006201765 implements MigrationInterface {
                         isNullable: false,
                     },
                     {
-                        name: "case",
+                        name: "case_type",
                         type: "varchar",
                         length: "100",
                         isNullable: false,

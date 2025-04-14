@@ -12,18 +12,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const data_source_1 = require("./data-source");
 const express = require("express");
 const dotenv = require("dotenv");
-const user_routes_1 = require("./routes/user.routes");
 require("reflect-metadata");
 const errorHandler_1 = require("./middleware/errorHandler");
 const admin_routes_1 = require("./routes/admin.routes");
+const auth_routes_1 = require("./routes/auth.routes");
+const user_routes_1 = require("./routes/user.routes");
 dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(errorHandler_1.errorHandler);
 const { PORT = 3000 } = process.env;
 // endpoint
-app.use("/auth", user_routes_1.userRouter);
+app.use("/auth", auth_routes_1.authRouter);
 app.use("/admin", admin_routes_1.AdminRouter);
+app.use(user_routes_1.userRouter);
 app.get("*", (req, res) => {
     res.status(505).json({ message: "Bad Request" });
 });

@@ -32,20 +32,17 @@ import { Patient } from "./Patient.entity";
     })
     category: string;
 
+    @Column({ nullable: false})
+    diagnose: string;
+
     @Column({ nullable: false })
-    case: string;
+    case_type: string;
 
     @Column({ nullable: false })
     payment_method: string;
 
     @Column({ nullable: false })
     case_description: string;
-  
-    @CreateDateColumn()
-    createdAt: Date;
-  
-    @UpdateDateColumn()
-    updatedAt: Date;
 
     @OneToMany(() => PersonalCase, (personalCase) => personalCase.simulation)
     personalCases: PersonalCase[];

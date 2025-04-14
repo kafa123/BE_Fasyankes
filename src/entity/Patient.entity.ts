@@ -13,6 +13,7 @@ import { HealthInformationPatient } from "./HealthInformationPatient.entity";
 import { PatientDetail } from "./PatientDetail.entity";
 import { PatientVisitData } from "./PatientVisitData.entity";
 import { PatientReferralData } from "./PatientReferralData.entity";
+import { SepData } from "./SepData.entity";
 
 @Entity({ name: "patients" })
 export class Patient {
@@ -78,5 +79,8 @@ export class Patient {
 
     @OneToOne(() => PatientReferralData, (patientReferralData) => patientReferralData.patient)
     patientReferralData: PatientReferralData;
+
+    @OneToOne(() => SepData, (sepData) => sepData.patient)
+    sepData: SepData;
 
 }

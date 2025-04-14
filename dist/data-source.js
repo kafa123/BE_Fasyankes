@@ -4,8 +4,6 @@ exports.AppDataSource = void 0;
 require("reflect-metadata");
 const typeorm_1 = require("typeorm");
 const dotenv = require("dotenv");
-const User_entity_1 = require("./entity/User.entity");
-const UserCount_entity_1 = require("./entity/UserCount.entity");
 dotenv.config();
 const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE, NODE_ENV } = process.env;
 exports.AppDataSource = new typeorm_1.DataSource({
@@ -17,7 +15,7 @@ exports.AppDataSource = new typeorm_1.DataSource({
     database: DB_DATABASE,
     synchronize: NODE_ENV === "dev" ? false : false,
     logging: NODE_ENV === "dev" ? false : false,
-    entities: [User_entity_1.User, UserCount_entity_1.UserCount],
+    entities: [__dirname + '/entity/*.entity.{ts,js}'],
     migrations: [__dirname + "/migrations/*.ts"],
     subscribers: [],
 });
