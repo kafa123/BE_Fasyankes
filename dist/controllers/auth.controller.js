@@ -51,6 +51,26 @@ class AuthController {
             }
         });
     }
+    static signup(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { name, email, password, profesion, institute, phone_number, role } = req.body;
+            const encryptedPassword = yield encrypt_1.encrypt.encryptpass(password);
+            const user = new User_entity_1.User();
+            user.name = name;
+            user.email = email;
+            user.password = encryptedPassword;
+            user.profesion = profesion;
+            user.institute = institute;
+            user.phone_number = phone_number;
+            user.role = role;
+            const userRepository = data_source_1.AppDataSource.getRepository(User_entity_1.User);
+            yield userRepository.save(user);
+            res
+                .status(200)
+                .json({ message: "User created successfully", user });
+            return;
+        });
+    }
 }
 exports.AuthController = AuthController;
 //# sourceMappingURL=auth.controller.js.map

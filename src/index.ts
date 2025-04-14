@@ -4,9 +4,12 @@ import * as dotenv from "dotenv";
 import { Request, Response } from "express";
 import "reflect-metadata";
 import { errorHandler } from "./middleware/errorHandler";
-import { AdminRouter } from "./routes/admin.routes";
+import { AdminTPPRJRouter } from "./routes/admin/tpprj.routes";
 import { authRouter } from "./routes/auth.routes";
-import { userRouter } from "./routes/user.routes";
+import { AdminUserRouter } from "./routes/admin/user.routes";
+import { UserTPPRJRouter } from "./routes/user/tpprj.routes";
+import { AdminTPPGDRouter } from "./routes/admin/tppgd.routes";
+import { UserTPPGDRouter } from "./routes/user/tppgd.routes";
 
 dotenv.config();
 
@@ -17,8 +20,11 @@ const { PORT = 3000 } = process.env;
 
 // endpoint
 app.use("/auth", authRouter);
-app.use("/admin", AdminRouter);
-app.use(userRouter);
+app.use("/admin/user/", AdminUserRouter);
+app.use("/admin/tpprj", AdminTPPRJRouter);
+app.use("/tpprj/", UserTPPRJRouter);
+app.use("/admin/tppgd", AdminTPPGDRouter);
+app.use("/tppgd/", UserTPPGDRouter);
 
 app.get("*", (req: Request, res: Response) => {
   res.status(505).json({ message: "Bad Request" });

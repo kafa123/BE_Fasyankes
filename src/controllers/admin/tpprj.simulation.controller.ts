@@ -2,23 +2,31 @@ import { Request, Response } from "express";
 import { AppDataSource } from "../../data-source";
 import { Simulation } from "../../entity/Simulation.entity";
 
-export class SimulationController {
+export class AdminTPPRJSimulationController {
   
   static async create(req: Request, res: Response):Promise<void> {
     try {
       const { patient_type, 
-        category, 
         case_type, 
         payment_method, 
         case_description, 
         diagnose } = req.body;
-      if (!patient_type || !category || !case_type || !payment_method || !case_description || !diagnose) {
+
+      if (!patient_type || !case_type || !payment_method || !case_description || !diagnose) {
         res.status(400).json({ error: "All fields are required" });
         return;
       }
 
       const repo = AppDataSource.getRepository(Simulation);
-      const simulation = repo.create(req.body);
+      const simulation = repo.create({
+        patient_type,
+        case_type,
+        payment_method,
+        case_description,
+        diagnose,
+        category: "rawat_jalan"
+      });
+      
       await repo.save(simulation);
       res.status(201).json({ message: "Simulation created successfully", simulation });
       return;
@@ -51,8 +59,12 @@ export class SimulationController {
     try {
       const repo = AppDataSource.getRepository(Simulation);
       const result = await repo.delete(req.params.id);
-      if (result.affected === 0)
+
+      if (result.affected === 0){
         res.status(404).json({ error: "Simulation not found" });
+        return;
+      }
+  
       res.status(200).json({ message: "Simulation deleted successfully" });
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });

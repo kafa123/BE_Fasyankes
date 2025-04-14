@@ -48,4 +48,25 @@ export class AuthController {
     }
   }
 
+  static async signup(req: Request, res: Response) {
+    const { name, email, password, profesion, institute, phone_number, role } = req.body;
+    const encryptedPassword = await encrypt.encryptpass(password);
+    const user = new User();
+    user.name = name;
+    user.email = email;
+    user.password = encryptedPassword;
+    user.profesion = profesion;
+    user.institute = institute;
+    user.phone_number = phone_number;
+    user.role = role;
+
+    const userRepository = AppDataSource.getRepository(User);
+    await userRepository.save(user);
+
+    res
+      .status(200)
+      .json({ message: "User created successfully", user });
+    return;
+  }
+
 }

@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
-import { AppDataSource } from "../data-source";
+import { AppDataSource } from "../../data-source";
 import * as cache from "memory-cache";
-import { UserCount } from "../entity/UserCount.entity";
+import { UserCount } from "../../entity/UserCount.entity";
+import { User } from "../../entity/User.entity";
 
-export class AdminController {
+export class AdminUserController {
   
     static async getUserCounts(_: Request, res: Response) {
         const data = cache.get("data");
@@ -28,6 +29,27 @@ export class AdminController {
           cache.put("data", loginCounts, 6000);
           res.status(200).json({
             data: loginCounts,
+          });
+          return;
+        }
+      }
+
+      static async getUsers(_: Request, res: Response) {
+        const data = cache.get("data");
+        if (data) {
+          console.log("serving from cache");
+          res.status(200).json({
+            data,
+          });
+          return;
+        } else {
+          console.log("serving from db");
+          const userRepository = AppDataSource.getRepository(User);
+          const users = await userRepository.find();
+    
+          cache.put("data", users, 6000);
+          res.status(200).json({
+            data: users,
           });
           return;
         }

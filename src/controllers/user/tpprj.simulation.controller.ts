@@ -1,14 +1,18 @@
 import { Request,Response } from "express";
-import { AppDataSource } from "../data-source";
-import { Simulation } from "../entity/Simulation.entity";
+import { AppDataSource } from "../../data-source";
+import { Simulation } from "../../entity/Simulation.entity";
 
-export class SimulationUserController{
+export class UserTPPRJSimulationController{
 
     static async getAll(req: Request, res: Response):Promise<void> {
         try {
           console.log("Error fetching simulations");
           const repo = AppDataSource.getRepository(Simulation);
-          const simulations = await repo.find();
+          const simulations = await repo.find({
+            where: {
+              category: "rawat_jalan"
+            }
+          });
           res.status(200).json({ data: simulations });
           return;
         } catch (error) {

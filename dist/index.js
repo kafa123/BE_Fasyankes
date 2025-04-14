@@ -14,9 +14,12 @@ const express = require("express");
 const dotenv = require("dotenv");
 require("reflect-metadata");
 const errorHandler_1 = require("./middleware/errorHandler");
-const admin_routes_1 = require("./routes/admin.routes");
+const tpprj_routes_1 = require("./routes/admin/tpprj.routes");
 const auth_routes_1 = require("./routes/auth.routes");
-const user_routes_1 = require("./routes/user.routes");
+const user_routes_1 = require("./routes/admin/user.routes");
+const tpprj_routes_2 = require("./routes/user/tpprj.routes");
+const tppgd_routes_1 = require("./routes/admin/tppgd.routes");
+const tppgd_routes_2 = require("./routes/user/tppgd.routes");
 dotenv.config();
 const app = express();
 app.use(express.json());
@@ -24,8 +27,11 @@ app.use(errorHandler_1.errorHandler);
 const { PORT = 3000 } = process.env;
 // endpoint
 app.use("/auth", auth_routes_1.authRouter);
-app.use("/admin", admin_routes_1.AdminRouter);
-app.use(user_routes_1.userRouter);
+app.use("/admin/user/", user_routes_1.AdminUserRouter);
+app.use("/admin/tpprj", tpprj_routes_1.AdminTPPRJRouter);
+app.use("/tpprj/", tpprj_routes_2.UserTPPRJRouter);
+app.use("/admin/tppgd", tppgd_routes_1.AdminTPPGDRouter);
+app.use("/tppgd/", tppgd_routes_2.UserTPPGDRouter);
 app.get("*", (req, res) => {
     res.status(505).json({ message: "Bad Request" });
 });
