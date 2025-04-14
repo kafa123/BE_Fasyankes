@@ -12,7 +12,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminTPPRJSimulationController = void 0;
 const data_source_1 = require("../../data-source");
 const Simulation_entity_1 = require("../../entity/Simulation.entity");
+const User_entity_1 = require("../../entity/User.entity");
+const PersonalCase_entity_1 = require("../../entity/PersonalCase.entity");
 class AdminTPPRJSimulationController {
+    static get(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("Error fetching simulations");
+                const repo = data_source_1.AppDataSource.getRepository(Simulation_entity_1.Simulation);
+                const simulations = yield repo.find({
+                    where: {
+                        category: "rawat_jalan"
+                    }
+                });
+                res.status(200).json({ data: simulations });
+                return;
+            }
+            catch (error) {
+                res.status(500).json({ error: "Internal Server Error" });
+            }
+        });
+    }
     static create(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -22,6 +42,8 @@ class AdminTPPRJSimulationController {
                     return;
                 }
                 const repo = data_source_1.AppDataSource.getRepository(Simulation_entity_1.Simulation);
+                const userRepo = data_source_1.AppDataSource.getRepository(User_entity_1.User);
+                const personalCaseRepo = data_source_1.AppDataSource.getRepository(PersonalCase_entity_1.PersonalCase);
                 const simulation = repo.create({
                     patient_type,
                     case_type,
@@ -31,7 +53,19 @@ class AdminTPPRJSimulationController {
                     category: "rawat_jalan"
                 });
                 yield repo.save(simulation);
-                res.status(201).json({ message: "Simulation created successfully", simulation });
+                const users = yield userRepo.find({
+                    where: { role: "user" }
+                });
+                const personalCases = users.map((user) => {
+                    return personalCaseRepo.create({
+                        simulation_id: simulation.id,
+                        user_id: user.id,
+                        checklist: false,
+                        duration: 0
+                    });
+                });
+                yield personalCaseRepo.save(personalCases);
+                res.status(201).json({ message: "Simulation and personal cases created successfully", simulation });
                 return;
             }
             catch (error) {

@@ -5,6 +5,13 @@ import { AdminTPPGDSimulationController } from "../../controllers/admin/tppgd.si
 
 const Router = express.Router();
 
+Router.get(
+  "/get-all-simulation",
+  authentification,
+  authorization(["admin"]),
+  AdminTPPGDSimulationController.get
+)
+
 Router.post(
   "/post-simulation",
   authentification,

@@ -5,6 +5,13 @@ import { AdminTPPRJSimulationController } from "../../controllers/admin/tpprj.si
 
 const Router = express.Router();
 
+Router.get(
+  "/get-all-simulation",
+  authentification,
+  authorization(["admin"]),
+  AdminTPPRJSimulationController.get
+)
+
 Router.post(
   "/post-simulation",
   authentification,
