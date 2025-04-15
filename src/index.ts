@@ -4,13 +4,10 @@ import * as dotenv from "dotenv";
 import { Request, Response } from "express";
 import "reflect-metadata";
 import { errorHandler } from "./middleware/errorHandler";
-import { AdminTPPRJRouter } from "./routes/admin/tpprj.routes";
 import { authRouter } from "./routes/auth.routes";
 import { AdminUserRouter } from "./routes/admin/user.routes";
 import { UserTPPRJRouter } from "./routes/user/tpprj.routes";
-import { AdminTPPGDRouter } from "./routes/admin/tppgd.routes";
 import { UserTPPGDRouter } from "./routes/user/tppgd.routes";
-import { AdminTPPRIRouter } from "./routes/admin/tppri.routes";
 import { UserTPPRIRouter } from "./routes/user/tppri.routes";
 import { AdminSimulationRouter } from "./routes/admin/simulation.routes";
 
@@ -25,13 +22,9 @@ const { PORT = 3000 } = process.env;
 app.use("/auth", authRouter);
 app.use("/admin/user/", AdminUserRouter);
 
-app.use("/admin/tpprj", AdminTPPRJRouter);
 app.use("/tpprj/", UserTPPRJRouter);
 
-app.use("/admin/tppgd", AdminTPPGDRouter);
 app.use("/tppgd/", UserTPPGDRouter);
-
-app.use("/admin/tppri", AdminTPPRIRouter);
 
 app.use("/admin/simulation", AdminSimulationRouter);
 
