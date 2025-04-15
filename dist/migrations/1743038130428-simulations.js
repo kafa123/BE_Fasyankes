@@ -37,6 +37,12 @@ class Simulations1743006201765 {
                         isNullable: false,
                     },
                     {
+                        name: "perujuk",
+                        type: "varchar",
+                        length: "100",
+                        isNullable: true,
+                    },
+                    {
                         name: "diagnose",
                         type: "varchar",
                         length: "100",
@@ -58,6 +64,16 @@ class Simulations1743006201765 {
                         name: "case_description",
                         type: "text",
                         isNullable: false,
+                    },
+                    {
+                        name: "createdAt",
+                        type: "timestamp",
+                        default: "now()",
+                    },
+                    {
+                        name: "updatedAt",
+                        type: "timestamp",
+                        default: "now()",
                     },
                 ],
             }));

@@ -37,6 +37,14 @@ __decorate([
     __metadata("design:type", Number)
 ], PersonalCase.prototype, "duration", void 0);
 __decorate([
+    (0, typeorm_1.CreateDateColumn)(),
+    __metadata("design:type", Date)
+], PersonalCase.prototype, "createdAt", void 0);
+__decorate([
+    (0, typeorm_1.UpdateDateColumn)(),
+    __metadata("design:type", Date)
+], PersonalCase.prototype, "updatedAt", void 0);
+__decorate([
     (0, typeorm_1.ManyToOne)(() => User_entity_1.User, (user) => user.personalCases, { onDelete: "CASCADE" }),
     (0, typeorm_1.JoinColumn)({ name: "user_id" }),
     __metadata("design:type", User_entity_1.User)

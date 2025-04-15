@@ -29,6 +29,12 @@ import { Simulation } from "./Simulation.entity";
     @Column({ default: 0 })
     duration: number;
 
+    @CreateDateColumn()
+    createdAt: Date;
+  
+    @UpdateDateColumn()
+    updatedAt: Date;
+
     @ManyToOne(() => User, (user) => user.personalCases, { onDelete: "CASCADE" })
     @JoinColumn({ name: "user_id" })
     user: User;

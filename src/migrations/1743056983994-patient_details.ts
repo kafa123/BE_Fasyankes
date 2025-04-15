@@ -83,6 +83,16 @@ export class PatientDetails1743056983994 implements MigrationInterface {
                             length: "255",
                             isNullable: true,
                         },
+                        {
+                            name: "createdAt",
+                            type: "timestamp",
+                            default: "now()",
+                        },
+                        {
+                            name: "updatedAt",
+                            type: "timestamp",
+                            default: "now()",
+                        },
                     ],
                     foreignKeys: [
                         {

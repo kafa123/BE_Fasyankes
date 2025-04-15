@@ -28,6 +28,14 @@ __decorate([
     __metadata("design:type", String)
 ], PrivacyRequest.prototype, "privacy_request", void 0);
 __decorate([
+    (0, typeorm_1.CreateDateColumn)(),
+    __metadata("design:type", Date)
+], PrivacyRequest.prototype, "createdAt", void 0);
+__decorate([
+    (0, typeorm_1.UpdateDateColumn)(),
+    __metadata("design:type", Date)
+], PrivacyRequest.prototype, "updatedAt", void 0);
+__decorate([
     (0, typeorm_1.OneToOne)(() => Patient_entity_1.Patient, (patient) => patient.valueBelief, { onDelete: "CASCADE" }),
     (0, typeorm_1.JoinColumn)({ name: "patient_id" }),
     __metadata("design:type", Patient_entity_1.Patient)

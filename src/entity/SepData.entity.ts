@@ -3,7 +3,9 @@ import {
     PrimaryGeneratedColumn,
     Column,
     OneToOne, 
-    JoinColumn
+    JoinColumn,
+    CreateDateColumn,
+    UpdateDateColumn,
   } from "typeorm";
 import { Patient } from "./Patient.entity";
 
@@ -32,6 +34,12 @@ export class SepData {
   
     @Column({ nullable: false })
     accident: string;
+
+    @CreateDateColumn()
+    createdAt: Date;
+  
+    @UpdateDateColumn()
+    updatedAt: Date;
 
     @OneToOne(() => Patient, (patient) => patient.sepData, { onDelete: "CASCADE" })
     @JoinColumn({ name: "patient_id" })

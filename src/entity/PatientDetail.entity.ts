@@ -4,6 +4,8 @@ import {
     JoinColumn,
     OneToOne,
     PrimaryGeneratedColumn,
+    CreateDateColumn,
+    UpdateDateColumn,
   } from "typeorm";
 
 import { Patient } from "./Patient.entity";
@@ -84,6 +86,12 @@ export class PatientDetail {
 
     @Column({ nullable: true })
     insurance_number: string;
+
+    @CreateDateColumn()
+    createdAt: Date;
+  
+    @UpdateDateColumn()
+    updatedAt: Date;
 
     @OneToOne(() => Patient, (patient) => patient.patientDetail, { onDelete: "CASCADE" })
     @JoinColumn({ name: "patient_id" })

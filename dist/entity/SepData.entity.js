@@ -48,6 +48,14 @@ __decorate([
     __metadata("design:type", String)
 ], SepData.prototype, "accident", void 0);
 __decorate([
+    (0, typeorm_1.CreateDateColumn)(),
+    __metadata("design:type", Date)
+], SepData.prototype, "createdAt", void 0);
+__decorate([
+    (0, typeorm_1.UpdateDateColumn)(),
+    __metadata("design:type", Date)
+], SepData.prototype, "updatedAt", void 0);
+__decorate([
     (0, typeorm_1.OneToOne)(() => Patient_entity_1.Patient, (patient) => patient.sepData, { onDelete: "CASCADE" }),
     (0, typeorm_1.JoinColumn)({ name: "patient_id" }),
     __metadata("design:type", Patient_entity_1.Patient)

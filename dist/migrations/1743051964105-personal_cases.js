@@ -39,6 +39,21 @@ class PersonalCases1743051964105 {
                         type: "boolean",
                         isNullable: false,
                     },
+                    {
+                        name: "duration",
+                        type: "int",
+                        default: 0,
+                    },
+                    {
+                        name: "createdAt",
+                        type: "timestamp",
+                        default: "now()",
+                    },
+                    {
+                        name: "updatedAt",
+                        type: "timestamp",
+                        default: "now()",
+                    },
                 ],
             }));
             yield queryRunner.createForeignKey("personal_cases", new typeorm_1.TableForeignKey({

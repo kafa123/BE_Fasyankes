@@ -60,6 +60,16 @@ class SepDatas1743057012435 {
                         type: "varchar",
                         isNullable: false,
                     },
+                    {
+                        name: "createdAt",
+                        type: "timestamp",
+                        default: "now()",
+                    },
+                    {
+                        name: "updatedAt",
+                        type: "timestamp",
+                        default: "now()",
+                    },
                 ],
                 foreignKeys: [
                     {

@@ -40,6 +40,10 @@ __decorate([
     __metadata("design:type", String)
 ], Simulation.prototype, "category", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Simulation.prototype, "perujuk", void 0);
+__decorate([
     (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
 ], Simulation.prototype, "diagnose", void 0);
@@ -55,6 +59,14 @@ __decorate([
     (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
 ], Simulation.prototype, "case_description", void 0);
+__decorate([
+    (0, typeorm_1.CreateDateColumn)(),
+    __metadata("design:type", Date)
+], Simulation.prototype, "createdAt", void 0);
+__decorate([
+    (0, typeorm_1.UpdateDateColumn)(),
+    __metadata("design:type", Date)
+], Simulation.prototype, "updatedAt", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => PersonalCase_entity_1.PersonalCase, (personalCase) => personalCase.simulation),
     __metadata("design:type", Array)

@@ -25,6 +25,7 @@ export class AdminSimulationController {
       const { patient_type, 
         case_type,
         category, 
+        perujuk,
         payment_method, 
         case_description, 
         diagnose } = req.body;
@@ -44,7 +45,8 @@ export class AdminSimulationController {
         payment_method,
         case_description,
         diagnose,
-        category
+        category,
+        perujuk
       });
       
       await repo.save(simulation);

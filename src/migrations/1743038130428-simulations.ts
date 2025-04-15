@@ -27,6 +27,12 @@ export class Simulations1743006201765 implements MigrationInterface {
                         isNullable: false,
                     },
                     {
+                        name: "perujuk",
+                        type: "varchar",
+                        length: "100",
+                        isNullable: true,
+                    },
+                    {
                         name: "diagnose",
                         type: "varchar",
                         length: "100",
@@ -48,6 +54,16 @@ export class Simulations1743006201765 implements MigrationInterface {
                         name: "case_description",
                         type: "text",
                         isNullable: false,
+                    },
+                    {
+                        name: "createdAt",
+                        type: "timestamp",
+                        default: "now()",
+                    },
+                    {
+                        name: "updatedAt",
+                        type: "timestamp",
+                        default: "now()",
                     },
                 ],
             })

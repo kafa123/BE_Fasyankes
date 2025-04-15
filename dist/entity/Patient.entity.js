@@ -76,6 +76,14 @@ __decorate([
     __metadata("design:type", String)
 ], Patient.prototype, "district", void 0);
 __decorate([
+    (0, typeorm_1.CreateDateColumn)(),
+    __metadata("design:type", Date)
+], Patient.prototype, "createdAt", void 0);
+__decorate([
+    (0, typeorm_1.UpdateDateColumn)(),
+    __metadata("design:type", Date)
+], Patient.prototype, "updatedAt", void 0);
+__decorate([
     (0, typeorm_1.OneToOne)(() => Simulation_entity_1.Simulation, (simulation) => simulation.patient, { onDelete: "CASCADE" }),
     (0, typeorm_1.JoinColumn)({ name: "simulation_id" }),
     __metadata("design:type", Simulation_entity_1.Simulation)

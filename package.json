@@ -33,6 +33,7 @@
       "build": "tsc",
       "start": "ts-node src/index.ts",
       "typeorm": "typeorm-ts-node-commonjs",
-      "migration": "npm run typeorm migration:run -- -d ./src/data-source.ts"
+      "migration": "npm run typeorm migration:run -- -d ./src/data-source.ts",
+      "drop": "npx typeorm schema:drop --dataSource ./dist/data-source.js"
    }
 }

@@ -4,7 +4,8 @@ import {
     JoinColumn,
     OneToOne,
     PrimaryGeneratedColumn,
-
+    CreateDateColumn,
+    UpdateDateColumn,
   } from "typeorm";
 import { Simulation } from "./Simulation.entity";
 import { ValueBelief } from "./ValueBelief.entity";
@@ -57,6 +58,12 @@ export class Patient {
 
     @Column({ nullable: false })
     district: string;
+
+    @CreateDateColumn()
+    createdAt: Date;
+  
+    @UpdateDateColumn()
+    updatedAt: Date;
 
     @OneToOne(() => Simulation, (simulation) => simulation.patient, { onDelete: "CASCADE" })
     @JoinColumn({ name: "simulation_id" })

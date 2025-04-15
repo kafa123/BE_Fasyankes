@@ -84,6 +84,16 @@ class Patients1743056790110 {
                         length: "100",
                         isNullable: false,
                     },
+                    {
+                        name: "createdAt",
+                        type: "timestamp",
+                        default: "now()",
+                    },
+                    {
+                        name: "updatedAt",
+                        type: "timestamp",
+                        default: "now()",
+                    },
                 ],
                 foreignKeys: [
                     {
