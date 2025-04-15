@@ -9,12 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AdminTPPGDSimulationController = void 0;
+exports.AdminTPPRISimulationController = void 0;
 const data_source_1 = require("../../data-source");
 const Simulation_entity_1 = require("../../entity/Simulation.entity");
 const User_entity_1 = require("../../entity/User.entity");
 const PersonalCase_entity_1 = require("../../entity/PersonalCase.entity");
-class AdminTPPGDSimulationController {
+class AdminTPPRISimulationController {
     static get(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -22,7 +22,7 @@ class AdminTPPGDSimulationController {
                 const repo = data_source_1.AppDataSource.getRepository(Simulation_entity_1.Simulation);
                 const simulations = yield repo.find({
                     where: {
-                        category: "gawat_darurat"
+                        category: "rawat_inap"
                     }
                 });
                 res.status(200).json({ data: simulations });
@@ -50,7 +50,7 @@ class AdminTPPGDSimulationController {
                     payment_method,
                     case_description,
                     diagnose,
-                    category: "gawat_darurat"
+                    category: "rawat_inap"
                 });
                 yield repo.save(simulation);
                 const users = yield userRepo.find({
@@ -109,5 +109,5 @@ class AdminTPPGDSimulationController {
         });
     }
 }
-exports.AdminTPPGDSimulationController = AdminTPPGDSimulationController;
-//# sourceMappingURL=tppgd.simulation.controller%20copy.js.map
+exports.AdminTPPRISimulationController = AdminTPPRISimulationController;
+//# sourceMappingURL=tppri.simulation.controller.js.map

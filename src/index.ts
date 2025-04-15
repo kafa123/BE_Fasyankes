@@ -10,6 +10,9 @@ import { AdminUserRouter } from "./routes/admin/user.routes";
 import { UserTPPRJRouter } from "./routes/user/tpprj.routes";
 import { AdminTPPGDRouter } from "./routes/admin/tppgd.routes";
 import { UserTPPGDRouter } from "./routes/user/tppgd.routes";
+import { AdminTPPRIRouter } from "./routes/admin/tppri.routes";
+import { UserTPPRIRouter } from "./routes/user/tppri.routes";
+import { AdminSimulationRouter } from "./routes/admin/simulation.routes";
 
 dotenv.config();
 
@@ -21,10 +24,18 @@ const { PORT = 3000 } = process.env;
 // endpoint
 app.use("/auth", authRouter);
 app.use("/admin/user/", AdminUserRouter);
+
 app.use("/admin/tpprj", AdminTPPRJRouter);
 app.use("/tpprj/", UserTPPRJRouter);
+
 app.use("/admin/tppgd", AdminTPPGDRouter);
 app.use("/tppgd/", UserTPPGDRouter);
+
+app.use("/admin/tppri", AdminTPPRIRouter);
+
+app.use("/admin/simulation", AdminSimulationRouter);
+
+app.use("/tppri/", UserTPPRIRouter);
 
 app.get("*", (req: Request, res: Response) => {
   res.status(505).json({ message: "Bad Request" });
