@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../../data-source";
 import { Simulation } from "../../entity/Simulation.entity";
+import { errorHandler } from "../../middleware/errorHandler";
 
 export class SimulationController {
   
@@ -21,7 +22,7 @@ export class SimulationController {
       await repo.save(simulation);
       res.status(201).json({ message: "Simulation created successfully", simulation });
     } catch (error) {
-      res.status(500).json({ error: error });
+      res.status(500).json({ error: error, errorHandler });
     }
   }
 

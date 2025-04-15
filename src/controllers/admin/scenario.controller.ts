@@ -1,27 +1,55 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../../data-source";
 import { Scenario } from "../../entity/Scenario.entity";
+import { Answer } from "../../entity/Answer.entity";
 
 export class ScenarioController {
   
-  static async create(req: Request, res: Response):Promise<void> {
+  static async create(req: Request, res: Response): Promise<void> {
     try {
-      const { patient_type, 
-        category, 
-        case_type, 
-        payment_method, 
-        case_description, 
-        diagnose } = req.body;
-      if (!patient_type || !category || !case_type || !payment_method || !case_description || !diagnose) {
-        res.status(400).json({ error: "All fields are required" });
+      const {
+        simulation_id,
+        scenario,
+        question,
+        component,
+        answer_text,
+        answer_image
+      } = req.body;
+  
+      if (!scenario || !question || !component) {
+        res.status(400).json({ error: "Scenario, question, and component are required" });
+        return;
       }
-
-      const repo = AppDataSource.getRepository(Scenario);
-      const simulation = repo.create(req.body);
-      await repo.save(simulation);
-      res.status(201).json({ message: "Simulation created successfully", simulation });
+  
+      const scenarioRepo = AppDataSource.getRepository(Scenario);
+      const answerRepo = AppDataSource.getRepository(Answer);
+  
+      const newScenario = scenarioRepo.create({
+        simulation_id,
+        scenario,
+        question,
+        component,
+      });
+  
+      const savedScenario = await scenarioRepo.save(newScenario);
+  
+      const newAnswer = answerRepo.create({
+        scenario_id: savedScenario.id,
+        answer_text,
+        answer_image,
+      });
+  
+      const savedAnswer = await answerRepo.save(newAnswer);
+  
+      res.status(201).json({
+        message: "Scenario and answer created successfully",
+        scenario: savedScenario,
+        answer: savedAnswer
+      });
+  
     } catch (error) {
-      res.status(500).json({ error: error });
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
   }
 
@@ -29,12 +57,12 @@ export class ScenarioController {
   static async update(req: Request, res: Response):Promise<void> {
     try {
       const repo = AppDataSource.getRepository(Scenario);
-      let simulation = await repo.findOneBy({ id: parseInt(req.params.id) });
-      if (!simulation)
-        res.status(404).json({ error: "Simulation not found" });
-      repo.merge(simulation, req.body);
-      await repo.save(simulation);
-      res.status(200).json({ message: "Simulation updated successfully", simulation });
+      let scenario = await repo.findOneBy({ id: parseInt(req.params.id) });
+      if (!scenario)
+        res.status(404).json({ error: "Scenario not found" });
+      repo.merge(scenario, req.body);
+      await repo.save(scenario);
+      res.status(200).json({ message: "Scenario updated successfully", scenario });
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
     }
@@ -45,10 +73,12 @@ export class ScenarioController {
       const repo = AppDataSource.getRepository(Scenario);
       const result = await repo.delete(req.params.id);
       if (result.affected === 0)
-        res.status(404).json({ error: "Simulation not found" });
-      res.status(200).json({ message: "Simulation deleted successfully" });
+        res.status(404).json({ error: "SCenario not found" });
+      res.status(200).json({ message: "Scenario deleted successfully" });
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
     }
   }
+
+  
 }

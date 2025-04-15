@@ -29,10 +29,14 @@ app.get("*", (req, res) => {
 });
 data_source_1.AppDataSource.initialize()
     .then(() => __awaiter(void 0, void 0, void 0, function* () {
-    app.listen(PORT, () => {
-        console.log("Server is running on http://localhost:" + PORT);
+    // app.listen(PORT, () => {
+    //   console.log("Server is running on http://localhost:" + PORT);
+    // });
+    // console.log("Data Source has been initialized!");
+    app.listen(Number(PORT), "0.0.0.0", () => {
+        console.log(`✅ Server is running at:`);
+        console.log(`- Local:    http://localhost:${PORT}`);
     });
-    console.log("Data Source has been initialized!");
 }))
     .catch((error) => console.log(error));
 //# sourceMappingURL=index.js.map

@@ -3,6 +3,7 @@ import { authentification } from "../middleware/authentification";
 import { authorization } from "../middleware/authorization";
 import { AdminController } from "../controllers/admin.controller";
 import { SimulationController } from "../controllers/admin/simulation.controller";
+import { ScenarioController } from "../controllers/admin/scenario.controller";
 
 const Router = express.Router();
 
@@ -32,6 +33,26 @@ Router.delete(
   authentification,
   authorization(["admin"]),
   SimulationController.delete
+)
+
+Router.post(
+  "/post-scenario",
+  authentification,
+  authorization(["admin"]),
+  ScenarioController.create
+)
+
+Router.put(
+  "/update-scenario/:id",
+  authentification,
+  authorization(["admin"]),
+  ScenarioController.update
+)
+Router.delete(
+  "/delete-scenario/:id",
+  authentification,
+  authorization(["admin"]),
+  ScenarioController.delete
 )
 
 
