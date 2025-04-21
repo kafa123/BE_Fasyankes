@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserTPPRJRouter = void 0;
+const express = require("express");
+const tpprj_simulation_controller_1 = require("../../controllers/user/tpprj.simulation.controller");
+const Router = express.Router();
+exports.UserTPPRJRouter = Router;
+Router.get("/get-all-simulation", tpprj_simulation_controller_1.SimulationController.getAll);
+Router.get("/get-simulation/:id", tpprj_simulation_controller_1.SimulationController.getOne);
+//# sourceMappingURL=user.routes.js.map

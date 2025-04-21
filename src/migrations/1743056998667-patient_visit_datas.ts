@@ -34,6 +34,16 @@ export class PatientVisitDatas1743056998667 implements MigrationInterface {
                         length: "50",
                         isNullable: false,
                     },
+                    {
+                        name: "createdAt",
+                        type: "timestamp",
+                        default: "now()",
+                    },
+                    {
+                        name: "updatedAt",
+                        type: "timestamp",
+                        default: "now()",
+                    },
                 ],
                 foreignKeys: [
                     {

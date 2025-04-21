@@ -4,7 +4,8 @@ import {
     JoinColumn,
     OneToOne,
     PrimaryGeneratedColumn,
-
+    CreateDateColumn,
+    UpdateDateColumn,
   } from "typeorm";
 import { Scenario } from "./Scenario.entity";
 
@@ -21,6 +22,12 @@ export class Answer {
 
     @Column({ nullable: true })
     answer_image: string;
+
+    @CreateDateColumn()
+    createdAt: Date;
+  
+    @UpdateDateColumn()
+    updatedAt: Date;
 
     @OneToOne(() => Scenario, (scenario) => scenario.answer, { onDelete: "CASCADE" })
     @JoinColumn({ name: "scenario_id" })

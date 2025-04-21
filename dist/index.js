@@ -12,10 +12,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const data_source_1 = require("./data-source");
 const express = require("express");
 const dotenv = require("dotenv");
-const user_routes_1 = require("./routes/user.routes");
 require("reflect-metadata");
 const errorHandler_1 = require("./middleware/errorHandler");
-const admin_routes_1 = require("./routes/admin.routes");
+const tpprj_routes_1 = require("./routes/admin/tpprj.routes");
+const auth_routes_1 = require("./routes/auth.routes");
+const user_routes_1 = require("./routes/admin/user.routes");
+const tpprj_routes_2 = require("./routes/user/tpprj.routes");
+const tppgd_routes_1 = require("./routes/admin/tppgd.routes");
+const tppgd_routes_2 = require("./routes/user/tppgd.routes");
+const tppri_routes_1 = require("./routes/admin/tppri.routes");
+const tppri_routes_2 = require("./routes/user/tppri.routes");
+const simulation_routes_1 = require("./routes/admin/simulation.routes");
 const cors = require("cors");
 const path = require("path");
 dotenv.config();
@@ -27,10 +34,6 @@ const { PORT = 3000 } = process.env;
 // endpoint
 app.use("/auth", user_routes_1.userRouter);
 app.use("/admin", admin_routes_1.AdminRouter);
-app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
-app.use((req, res) => {
-    res.status(404).json({ message: "Not Found" });
-});
 app.get("*", (req, res) => {
     res.status(505).json({ message: "Bad Request" });
 });

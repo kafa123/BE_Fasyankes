@@ -35,6 +35,16 @@ export class HealthInformationPatients1743056938865 implements MigrationInterfac
                         length: "20",
                         isNullable: true,
                     },
+                    {
+                        name: "createdAt",
+                        type: "timestamp",
+                        default: "now()",
+                    },
+                    {
+                        name: "updatedAt",
+                        type: "timestamp",
+                        default: "now()",
+                    },
                 ],
                 foreignKeys: [
                     {

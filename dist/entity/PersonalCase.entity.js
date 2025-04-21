@@ -21,6 +21,30 @@ __decorate([
     __metadata("design:type", Number)
 ], PersonalCase.prototype, "id", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ nullable: false }),
+    __metadata("design:type", Number)
+], PersonalCase.prototype, "user_id", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: false }),
+    __metadata("design:type", Number)
+], PersonalCase.prototype, "simulation_id", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: false }),
+    __metadata("design:type", Boolean)
+], PersonalCase.prototype, "checklist", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: 0 }),
+    __metadata("design:type", Number)
+], PersonalCase.prototype, "duration", void 0);
+__decorate([
+    (0, typeorm_1.CreateDateColumn)(),
+    __metadata("design:type", Date)
+], PersonalCase.prototype, "createdAt", void 0);
+__decorate([
+    (0, typeorm_1.UpdateDateColumn)(),
+    __metadata("design:type", Date)
+], PersonalCase.prototype, "updatedAt", void 0);
+__decorate([
     (0, typeorm_1.ManyToOne)(() => User_entity_1.User, (user) => user.personalCases, { onDelete: "CASCADE" }),
     (0, typeorm_1.JoinColumn)({ name: "user_id" }),
     __metadata("design:type", User_entity_1.User)
@@ -30,14 +54,6 @@ __decorate([
     (0, typeorm_1.JoinColumn)({ name: "simulation_id" }),
     __metadata("design:type", Simulation_entity_1.Simulation)
 ], PersonalCase.prototype, "simulation", void 0);
-__decorate([
-    (0, typeorm_1.CreateDateColumn)(),
-    __metadata("design:type", Date)
-], PersonalCase.prototype, "createdAt", void 0);
-__decorate([
-    (0, typeorm_1.UpdateDateColumn)(),
-    __metadata("design:type", Date)
-], PersonalCase.prototype, "updatedAt", void 0);
 exports.PersonalCase = PersonalCase = __decorate([
     (0, typeorm_1.Entity)({ name: "personal_cases" })
 ], PersonalCase);

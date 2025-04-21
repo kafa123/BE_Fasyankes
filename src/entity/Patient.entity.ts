@@ -4,7 +4,8 @@ import {
     JoinColumn,
     OneToOne,
     PrimaryGeneratedColumn,
-
+    CreateDateColumn,
+    UpdateDateColumn,
   } from "typeorm";
 import { Simulation } from "./Simulation.entity";
 import { ValueBelief } from "./ValueBelief.entity";
@@ -13,6 +14,7 @@ import { HealthInformationPatient } from "./HealthInformationPatient.entity";
 import { PatientDetail } from "./PatientDetail.entity";
 import { PatientVisitData } from "./PatientVisitData.entity";
 import { PatientReferralData } from "./PatientReferralData.entity";
+import { SepData } from "./SepData.entity";
 
 @Entity({ name: "patients" })
 export class Patient {
@@ -57,6 +59,12 @@ export class Patient {
     @Column({ nullable: false })
     district: string;
 
+    @CreateDateColumn()
+    createdAt: Date;
+  
+    @UpdateDateColumn()
+    updatedAt: Date;
+
     @OneToOne(() => Simulation, (simulation) => simulation.patient, { onDelete: "CASCADE" })
     @JoinColumn({ name: "simulation_id" })
     simulation: Simulation;
@@ -78,5 +86,8 @@ export class Patient {
 
     @OneToOne(() => PatientReferralData, (patientReferralData) => patientReferralData.patient)
     patientReferralData: PatientReferralData;
+
+    @OneToOne(() => SepData, (sepData) => sepData.patient)
+    sepData: SepData;
 
 }

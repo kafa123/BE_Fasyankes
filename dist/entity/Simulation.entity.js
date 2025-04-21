@@ -40,6 +40,10 @@ __decorate([
     __metadata("design:type", String)
 ], Simulation.prototype, "category", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Simulation.prototype, "perujuk", void 0);
+__decorate([
     (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
 ], Simulation.prototype, "diagnose", void 0);
@@ -78,44 +82,4 @@ __decorate([
 exports.Simulation = Simulation = __decorate([
     (0, typeorm_1.Entity)({ name: "simulations" })
 ], Simulation);
-// import {
-//     Entity,
-//     PrimaryGeneratedColumn,
-//     Column,
-//     CreateDateColumn,
-//     UpdateDateColumn,
-//     OneToMany,
-//     OneToOne
-//   } from "typeorm";
-//   @Entity({ name: "simulations" })
-//   export class Simulation {
-//     @PrimaryGeneratedColumn("increment")
-//     id: number;
-//     @Column({
-//         type: "enum",
-//         enum: ["pasien_lama", "pasien_baru"],
-//         enumName: "simulations_patient_type_enum",
-//         nullable: false,
-//     })
-//     patient_type: string;
-//     @Column({
-//         type: "enum",
-//         enum: ["rawat_jalan", "rawat_inap", "gawat_darurat"],
-//         enumName: "simulations_category_enum",
-//         nullable: false,
-//     })
-//     category: string;
-//     @Column({ nullable: false })
-//     case_type: string;
-//     @Column({ nullable: false })
-//     payment_method: string;
-//     @Column({ nullable: false })
-//     case_description: string;
-//     @Column({ nullable: false})
-//     diagnose:String;
-//     @CreateDateColumn()
-//     createdAt: Date;
-//     @UpdateDateColumn()
-//     updatedAt: Date;
-//   }
 //# sourceMappingURL=Simulation.entity.js.map

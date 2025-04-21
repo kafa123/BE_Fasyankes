@@ -16,9 +16,11 @@ class SimulationUserController {
     static getAll(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log("Error fetching simulations");
                 const repo = data_source_1.AppDataSource.getRepository(Simulation_entity_1.Simulation);
                 const simulations = yield repo.find();
                 res.status(200).json({ data: simulations });
+                return;
             }
             catch (error) {
                 res.status(500).json({ error: "Internal Server Error" });

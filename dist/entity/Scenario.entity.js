@@ -40,7 +40,15 @@ __decorate([
         nullable: false,
     }),
     __metadata("design:type", String)
-], Scenario.prototype, "component", void 0);
+], Scenario.prototype, "componen", void 0);
+__decorate([
+    (0, typeorm_1.CreateDateColumn)(),
+    __metadata("design:type", Date)
+], Scenario.prototype, "createdAt", void 0);
+__decorate([
+    (0, typeorm_1.UpdateDateColumn)(),
+    __metadata("design:type", Date)
+], Scenario.prototype, "updatedAt", void 0);
 __decorate([
     (0, typeorm_1.OneToOne)(() => Simulation_entity_1.Simulation, (simulation) => simulation.scenario, { onDelete: "CASCADE" }),
     (0, typeorm_1.JoinColumn)({ name: "simulation_id" }),

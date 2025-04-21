@@ -53,6 +53,16 @@ export class PatientReferralDatas1743057034405 implements MigrationInterface {
                         length: "255",
                         isNullable: false,
                     },
+                    {
+                        name: "createdAt",
+                        type: "timestamp",
+                        default: "now()",
+                    },
+                    {
+                        name: "updatedAt",
+                        type: "timestamp",
+                        default: "now()",
+                    },
                 ],
                 foreignKeys: [
                     {

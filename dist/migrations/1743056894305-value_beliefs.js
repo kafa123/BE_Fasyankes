@@ -32,6 +32,16 @@ class ValueBeliefs1743056894305 {
                         type: "text",
                         isNullable: true,
                     },
+                    {
+                        name: "createdAt",
+                        type: "timestamp",
+                        default: "now()",
+                    },
+                    {
+                        name: "updatedAt",
+                        type: "timestamp",
+                        default: "now()",
+                    },
                 ],
                 foreignKeys: [
                     {

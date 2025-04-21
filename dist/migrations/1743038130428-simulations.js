@@ -37,6 +37,12 @@ class Simulations1743006201765 {
                         isNullable: false,
                     },
                     {
+                        name: "perujuk",
+                        type: "varchar",
+                        length: "100",
+                        isNullable: true,
+                    },
+                    {
                         name: "diagnose",
                         type: "varchar",
                         length: "100",
@@ -75,7 +81,6 @@ class Simulations1743006201765 {
     }
     down(queryRunner) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield queryRunner.dropTable("simulations");
         });
     }
 }

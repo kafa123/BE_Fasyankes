@@ -32,6 +32,14 @@ __decorate([
     __metadata("design:type", String)
 ], Answer.prototype, "answer_image", void 0);
 __decorate([
+    (0, typeorm_1.CreateDateColumn)(),
+    __metadata("design:type", Date)
+], Answer.prototype, "createdAt", void 0);
+__decorate([
+    (0, typeorm_1.UpdateDateColumn)(),
+    __metadata("design:type", Date)
+], Answer.prototype, "updatedAt", void 0);
+__decorate([
     (0, typeorm_1.OneToOne)(() => Scenario_entity_1.Scenario, (scenario) => scenario.answer, { onDelete: "CASCADE" }),
     (0, typeorm_1.JoinColumn)({ name: "scenario_id" }),
     __metadata("design:type", Scenario_entity_1.Scenario)

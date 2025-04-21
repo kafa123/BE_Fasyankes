@@ -18,6 +18,7 @@ const HealthInformationPatient_entity_1 = require("./HealthInformationPatient.en
 const PatientDetail_entity_1 = require("./PatientDetail.entity");
 const PatientVisitData_entity_1 = require("./PatientVisitData.entity");
 const PatientReferralData_entity_1 = require("./PatientReferralData.entity");
+const SepData_entity_1 = require("./SepData.entity");
 let Patient = class Patient {
 };
 exports.Patient = Patient;
@@ -45,7 +46,7 @@ __decorate([
         nullable: false,
     }),
     __metadata("design:type", String)
-], Patient.prototype, "gender", void 0);
+], Patient.prototype, "category", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", Date)
@@ -75,6 +76,14 @@ __decorate([
     __metadata("design:type", String)
 ], Patient.prototype, "district", void 0);
 __decorate([
+    (0, typeorm_1.CreateDateColumn)(),
+    __metadata("design:type", Date)
+], Patient.prototype, "createdAt", void 0);
+__decorate([
+    (0, typeorm_1.UpdateDateColumn)(),
+    __metadata("design:type", Date)
+], Patient.prototype, "updatedAt", void 0);
+__decorate([
     (0, typeorm_1.OneToOne)(() => Simulation_entity_1.Simulation, (simulation) => simulation.patient, { onDelete: "CASCADE" }),
     (0, typeorm_1.JoinColumn)({ name: "simulation_id" }),
     __metadata("design:type", Simulation_entity_1.Simulation)
@@ -103,6 +112,10 @@ __decorate([
     (0, typeorm_1.OneToOne)(() => PatientReferralData_entity_1.PatientReferralData, (patientReferralData) => patientReferralData.patient),
     __metadata("design:type", PatientReferralData_entity_1.PatientReferralData)
 ], Patient.prototype, "patientReferralData", void 0);
+__decorate([
+    (0, typeorm_1.OneToOne)(() => SepData_entity_1.SepData, (sepData) => sepData.patient),
+    __metadata("design:type", SepData_entity_1.SepData)
+], Patient.prototype, "sepData", void 0);
 exports.Patient = Patient = __decorate([
     (0, typeorm_1.Entity)({ name: "patients" })
 ], Patient);

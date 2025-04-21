@@ -2,10 +2,14 @@ import { AppDataSource } from "./data-source"
 import * as express from "express";
 import * as dotenv from "dotenv";
 import { Request, Response } from "express";
-import { userRouter } from "./routes/user.routes";
 import "reflect-metadata";
 import { errorHandler } from "./middleware/errorHandler";
-import { AdminRouter } from "./routes/admin.routes";
+import { authRouter } from "./routes/auth.routes";
+import { AdminUserRouter } from "./routes/admin/user.routes";
+import { UserTPPRJRouter } from "./routes/user/tpprj.routes";
+import { UserTPPGDRouter } from "./routes/user/tppgd.routes";
+import { UserTPPRIRouter } from "./routes/user/tppri.routes";
+import { AdminSimulationRouter } from "./routes/admin/simulation.routes";
 import * as cors from "cors";
 import * as path from "path";
 
@@ -21,10 +25,7 @@ const { PORT = 3000 } = process.env;
 // endpoint
 app.use("/auth", userRouter);
 app.use("/admin", AdminRouter);
-app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
-app.use((req, res) => {
-  res.status(404).json({ message: "Not Found" });
-});
+
 app.get("*", (req: Request, res: Response) => {
   res.status(505).json({ message: "Bad Request" });
 });
