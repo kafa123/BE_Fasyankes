@@ -4,6 +4,7 @@ import { authorization } from "../middleware/authorization";
 import { AdminController } from "../controllers/admin.controller";
 import { SimulationController } from "../controllers/admin/simulation.controller";
 import { ScenarioController } from "../controllers/admin/scenario.controller";
+import upload from "../middleware/upload";
 
 const Router = express.Router();
 
@@ -37,6 +38,7 @@ Router.delete(
 
 Router.post(
   "/post-scenario",
+  upload.single("answer_image"),
   authentification,
   authorization(["admin"]),
   ScenarioController.create

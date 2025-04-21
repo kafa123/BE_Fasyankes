@@ -17,10 +17,20 @@ class ScenarioUserController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const repo = data_source_1.AppDataSource.getRepository(Scenario_entity_1.Scenario);
-                const simulations = yield repo.find();
-                res.status(200).json({ data: simulations });
+                const simulationId = parseInt(req.params.id); // make sure your route param is named simulation_id
+                if (isNaN(simulationId)) {
+                    res.status(400).json({ error: "Invalid simulation ID" });
+                    return;
+                }
+                const scenarios = yield repo.find({ where: { simulation_id: simulationId } });
+                if (scenarios.length === 0) {
+                    res.status(404).json({ error: "No scenarios found for this simulation" });
+                    return;
+                }
+                res.status(200).json({ data: scenarios });
             }
             catch (error) {
+                console.error(error);
                 res.status(500).json({ error: "Internal Server Error" });
             }
         });
@@ -29,10 +39,10 @@ class ScenarioUserController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const repo = data_source_1.AppDataSource.getRepository(Scenario_entity_1.Scenario);
-                const simulation = yield repo.findOneBy({ id: parseInt(req.params.id) });
-                if (!simulation)
-                    res.status(404).json({ error: "Simulation not found" });
-                res.status(200).json({ data: simulation });
+                const scenario = yield repo.findOneBy({ id: parseInt(req.params.id) });
+                if (!scenario)
+                    res.status(404).json({ error: "Scenario not found" });
+                res.status(200).json({ data: scenario });
             }
             catch (error) {
                 res.status(500).json({ error: "Internal Server Error" });

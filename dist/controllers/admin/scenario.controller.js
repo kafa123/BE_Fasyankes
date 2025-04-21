@@ -19,7 +19,7 @@ class ScenarioController {
             try {
                 const { simulation_id, scenario, question, component, answer_text, answer_image } = req.body;
                 if (!scenario || !question || !component) {
-                    res.status(400).json({ error: "Scenario, question, and component are required" });
+                    res.status(400).json({ error: scenario + component + question });
                     return;
                 }
                 const scenarioRepo = data_source_1.AppDataSource.getRepository(Scenario_entity_1.Scenario);
@@ -31,10 +31,11 @@ class ScenarioController {
                     component,
                 });
                 const savedScenario = yield scenarioRepo.save(newScenario);
+                const answerImagePath = req.file ? `/uploads/${req.file.filename}` : null;
                 const newAnswer = answerRepo.create({
                     scenario_id: savedScenario.id,
                     answer_text,
-                    answer_image,
+                    answer_image: answerImagePath,
                 });
                 const savedAnswer = yield answerRepo.save(newAnswer);
                 res.status(201).json({

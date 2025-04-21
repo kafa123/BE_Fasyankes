@@ -24,6 +24,8 @@ Router.get("/get-all-simulation", SimulationUserController.getAll)
 
 Router.get("/get-simulation/:id", SimulationUserController.getOne)
 
-Router.get("/get-Scenario/:id", ScenarioUserController.getOne)
+Router.get("/get-All-Scenario/:id", ScenarioUserController.getAll)
+
+Router.get("/get-Scenario/:id",ScenarioUserController.getOne)
 
 export { Router as userRouter };

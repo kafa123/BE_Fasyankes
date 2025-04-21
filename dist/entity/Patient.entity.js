@@ -45,7 +45,7 @@ __decorate([
         nullable: false,
     }),
     __metadata("design:type", String)
-], Patient.prototype, "category", void 0);
+], Patient.prototype, "gender", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", Date)

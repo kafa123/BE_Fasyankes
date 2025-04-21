@@ -17,7 +17,7 @@ export class ScenarioController {
       } = req.body;
   
       if (!scenario || !question || !component) {
-        res.status(400).json({ error: "Scenario, question, and component are required" });
+        res.status(400).json({ error: scenario + component + question });
         return;
       }
   
@@ -33,13 +33,16 @@ export class ScenarioController {
   
       const savedScenario = await scenarioRepo.save(newScenario);
   
+      const answerImagePath = req.file ? `/uploads/${req.file.filename}` : null;
+
       const newAnswer = answerRepo.create({
         scenario_id: savedScenario.id,
         answer_text,
-        answer_image,
+        answer_image: answerImagePath,
       });
   
       const savedAnswer = await answerRepo.save(newAnswer);
+  
   
       res.status(201).json({
         message: "Scenario and answer created successfully",

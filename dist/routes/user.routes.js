@@ -16,5 +16,6 @@ Router.post("/signup", upload_1.default.none(), user_controller_1.UserController
 Router.post("/login", upload_1.default.none(), auth_controller_1.AuthController.login);
 Router.get("/get-all-simulation", simulation_controller_1.SimulationUserController.getAll);
 Router.get("/get-simulation/:id", simulation_controller_1.SimulationUserController.getOne);
+Router.get("/get-All-Scenario/:id", scenario_controller_1.ScenarioUserController.getAll);
 Router.get("/get-Scenario/:id", scenario_controller_1.ScenarioUserController.getOne);
 //# sourceMappingURL=user.routes.js.map
