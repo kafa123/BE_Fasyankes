@@ -12,6 +12,16 @@ export class Scenarios1743054574272 implements MigrationInterface {
                     { name: "scenario", type: "varchar", length:"600", isNullable: false },
                     { name: "question", type: "varchar", length:"400", isNullable: false },
                     { name: "component", type: "enum", enum: ["Pendaftaran", "Data Kunjungan", "Data Rujukan", "Data SEP"], isNullable: false },
+                    {
+                        name: "createdAt",
+                        type: "timestamp",
+                        default: "now()",
+                    },
+                    {
+                        name: "updatedAt",
+                        type: "timestamp",
+                        default: "now()",
+                    },
                 ],
             })
         );
@@ -28,6 +38,16 @@ export class Scenarios1743054574272 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        const table = await queryRunner.getTable("scenarios");
+        const foreignKey = table!.foreignKeys.find(fk => fk.columnNames.includes("simulation_id"));
+
+        // Drop foreign key first
+        if (foreignKey) {
+            await queryRunner.dropForeignKey("scenarios", foreignKey);
+        }
+
+        // Then drop the table
+        await queryRunner.dropTable("scenarios");
     }
 
 }

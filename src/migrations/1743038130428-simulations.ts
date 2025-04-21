@@ -49,6 +49,16 @@ export class Simulations1743006201765 implements MigrationInterface {
                         type: "text",
                         isNullable: false,
                     },
+                    {
+                        name: "createdAt",
+                        type: "timestamp",
+                        default: "now()",
+                    },
+                    {
+                        name: "updatedAt",
+                        type: "timestamp",
+                        default: "now()",
+                    },
                 ],
             })
         );

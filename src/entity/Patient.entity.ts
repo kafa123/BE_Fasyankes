@@ -34,7 +34,7 @@ export class Patient {
       enumName: "patients_gender_enum",
       nullable: false,
     })
-    category: string;
+    gender: string;
 
     @Column({ nullable: false })
     date_of_birth: Date;

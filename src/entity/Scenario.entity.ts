@@ -28,7 +28,7 @@ export class Scenario {
       enumName: "scenarios_componen_enum",
       nullable: false,
     })
-    componen: string;
+    component: string;
 
     @OneToOne(() => Simulation, (simulation) => simulation.scenario, { onDelete: "CASCADE" })
     @JoinColumn({ name: "simulation_id" })

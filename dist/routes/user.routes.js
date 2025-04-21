@@ -7,9 +7,15 @@ const authentification_1 = require("../middleware/authentification");
 const user_controller_1 = require("../controllers/user.controller");
 const authorization_1 = require("../middleware/authorization");
 const auth_controller_1 = require("../controllers/auth.controller");
+const simulation_controller_1 = require("../controllers/simulation.controller");
+const scenario_controller_1 = require("../controllers/scenario.controller");
 const Router = express.Router();
 exports.userRouter = Router;
 Router.get("/users", authentification_1.authentification, (0, authorization_1.authorization)(["admin"]), user_controller_1.UserController.getUsers);
 Router.post("/signup", upload_1.default.none(), user_controller_1.UserController.signup);
 Router.post("/login", upload_1.default.none(), auth_controller_1.AuthController.login);
+Router.get("/get-all-simulation", simulation_controller_1.SimulationUserController.getAll);
+Router.get("/get-simulation/:id", simulation_controller_1.SimulationUserController.getOne);
+Router.get("/get-All-Scenario/:id", scenario_controller_1.ScenarioUserController.getAll);
+Router.get("/get-Scenario/:id", scenario_controller_1.ScenarioUserController.getOne);
 //# sourceMappingURL=user.routes.js.map

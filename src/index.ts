@@ -6,10 +6,14 @@ import { userRouter } from "./routes/user.routes";
 import "reflect-metadata";
 import { errorHandler } from "./middleware/errorHandler";
 import { AdminRouter } from "./routes/admin.routes";
+import * as cors from "cors";
+import * as path from "path";
+
 
 dotenv.config();
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(errorHandler);
 const { PORT = 3000 } = process.env;
@@ -17,16 +21,26 @@ const { PORT = 3000 } = process.env;
 // endpoint
 app.use("/auth", userRouter);
 app.use("/admin", AdminRouter);
-
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+app.use((req, res) => {
+  res.status(404).json({ message: "Not Found" });
+});
 app.get("*", (req: Request, res: Response) => {
   res.status(505).json({ message: "Bad Request" });
 });
 
+
 AppDataSource.initialize()
   .then(async () => {
-    app.listen(PORT, () => {
-      console.log("Server is running on http://localhost:" + PORT);
-    });
-    console.log("Data Source has been initialized!");
+
+    // app.listen(PORT, () => {
+    //   console.log("Server is running on http://localhost:" + PORT);
+    // });
+    // console.log("Data Source has been initialized!");
+
+    app.listen(Number(PORT), "0.0.0.0", () => {
+      console.log(`✅ Server is running at:`);
+      console.log(`- Local:    http://localhost:${PORT}`);
+    })
   })
   .catch((error) => console.log(error));
