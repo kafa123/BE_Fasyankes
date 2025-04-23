@@ -46,7 +46,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
-], PatientReferralData.prototype, "admision_note", void 0);
+], PatientReferralData.prototype, "admission_note", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)

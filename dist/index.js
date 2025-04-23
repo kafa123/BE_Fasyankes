@@ -14,17 +14,17 @@ const express = require("express");
 const dotenv = require("dotenv");
 require("reflect-metadata");
 const errorHandler_1 = require("./middleware/errorHandler");
-const tpprj_routes_1 = require("./routes/admin/tpprj.routes");
 const auth_routes_1 = require("./routes/auth.routes");
 const user_routes_1 = require("./routes/admin/user.routes");
-const tpprj_routes_2 = require("./routes/user/tpprj.routes");
-const tppgd_routes_1 = require("./routes/admin/tppgd.routes");
-const tppgd_routes_2 = require("./routes/user/tppgd.routes");
-const tppri_routes_1 = require("./routes/admin/tppri.routes");
-const tppri_routes_2 = require("./routes/user/tppri.routes");
+const tpprj_routes_1 = require("./routes/user/tpprj.routes");
+const tppgd_routes_1 = require("./routes/user/tppgd.routes");
+const tppri_routes_1 = require("./routes/user/tppri.routes");
 const simulation_routes_1 = require("./routes/admin/simulation.routes");
 const cors = require("cors");
 const path = require("path");
+const scenario_routes_1 = require("./routes/admin/scenario.routes");
+const registration_routes_1 = require("./routes/admin/registration.routes");
+const admission_routes_1 = require("./routes/admin/admission.routes");
 dotenv.config();
 const app = express();
 app.use(cors());
@@ -32,8 +32,20 @@ app.use(express.json());
 app.use(errorHandler_1.errorHandler);
 const { PORT = 3000 } = process.env;
 // endpoint
-app.use("/auth", user_routes_1.userRouter);
-app.use("/admin", admin_routes_1.AdminRouter);
+app.use("/auth", auth_routes_1.authRouter);
+app.use("/admin/user/", user_routes_1.AdminUserRouter);
+app.use("/tpprj/", tpprj_routes_1.UserTPPRJRouter);
+app.use("/tppgd/", tppgd_routes_1.UserTPPGDRouter);
+app.use("/tppri/", tppri_routes_1.UserTPPRIRouter);
+// Admin
+app.use("/admin/simulation", simulation_routes_1.AdminSimulationRouter);
+app.use("/admin/scenario", scenario_routes_1.AdminScenarioRouter);
+app.use("/admin/registration", registration_routes_1.AdminRegistrationRouter);
+app.use("/admin/admission", admission_routes_1.AdminAdmissionRouter);
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+app.use((req, res) => {
+    res.status(404).json({ message: "Not Found" });
+});
 app.get("*", (req, res) => {
     res.status(505).json({ message: "Bad Request" });
 });

@@ -52,7 +52,7 @@ class Patients1743056790110 {
                     },
                     {
                         name: "place_of_birth",
-                        type: "date",
+                        type: "varchar",
                         isNullable: false,
                     },
                     {

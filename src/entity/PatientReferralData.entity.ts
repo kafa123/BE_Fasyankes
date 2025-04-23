@@ -33,7 +33,7 @@ export class PatientReferralData {
     referrer_type: string;
 
     @Column({ nullable: false })
-    admision_note: string;
+    admission_note: string;
 
     @CreateDateColumn()
     createdAt: Date;

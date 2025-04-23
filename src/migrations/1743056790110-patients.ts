@@ -42,7 +42,7 @@ export class Patients1743056790110 implements MigrationInterface {
                     },
                     {
                         name: "place_of_birth",
-                        type: "date",
+                        type: "varchar",
                         isNullable: false,
                     },
                     {

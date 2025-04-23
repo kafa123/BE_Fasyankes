@@ -72,6 +72,14 @@ class PersonalCases1743051964105 {
     }
     down(queryRunner) {
         return __awaiter(this, void 0, void 0, function* () {
+            const table = yield queryRunner.getTable("personal_cases");
+            const foreignKey = table.foreignKeys.find(fk => fk.columnNames.includes("simulation_id"));
+            // Drop foreign key first
+            if (foreignKey) {
+                yield queryRunner.dropForeignKey("personal_cases", foreignKey);
+            }
+            // Then drop the table
+            yield queryRunner.dropTable("personal_cases");
         });
     }
 }

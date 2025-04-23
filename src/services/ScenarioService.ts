@@ -1,32 +1,81 @@
-// services/scenarioService.ts
+// service/ScenarioService.ts
 import { AppDataSource } from "../data-source";
 import { Scenario } from "../entity/Scenario.entity";
-import { Answer } from "../entity/Answer.entity";
-import { CreateScenarioWithAnswerDto } from "../dto/CreateScenarioWithAnswer.dto";
+import { Patient } from "../entity/Patient.entity";
+import { PatientDetail } from "../entity/PatientDetail.entity";
+import { PatientVisitData } from "../entity/PatientVisitData.entity";
 
-export const createScenarioWithAnswer = async (dto: CreateScenarioWithAnswerDto) => {
-  const scenarioRepo = AppDataSource.getRepository(Scenario);
-  const answerRepo = AppDataSource.getRepository(Answer);
+interface CreateScenarioInput {
+  scenario: string;
+  simulation_id: number;
+  question: string;
+  component: string;
+  patientData?: Partial<Patient>;
+  patientDetailData?: Partial<PatientDetail>;
+  patientVisitData?: Partial<PatientVisitData>;
+}
 
-  const scenario = scenarioRepo.create({
-    simulation_id: dto.simulation_id,
-    scenario: dto.scenario,
-    question: dto.question,
-    component: dto.component,
-  });
+export class ScenarioService {
+  static async createScenario(input: CreateScenarioInput): Promise<Scenario> {
+    const {
+      scenario,
+      simulation_id,
+      question,
+      component,
+      patientData,
+      patientDetailData,
+      patientVisitData,
+    } = input;
 
-  const savedScenario = await scenarioRepo.save(scenario);
+    const scenarioRepo = AppDataSource.getRepository(Scenario);
+    const patientRepo = AppDataSource.getRepository(Patient);
+    const patientDetailRepo = AppDataSource.getRepository(PatientDetail);
+    const patientVisitRepo = AppDataSource.getRepository(PatientVisitData);
 
-  const answer = answerRepo.create({
-    scenario_id: savedScenario.id,
-    answer_text: dto.answer_text,
-    answer_image: dto.answer_image,
-  });
+    const queryRunner = AppDataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-  const savedAnswer = await answerRepo.save(answer);
+    try {
+      const newScenario = scenarioRepo.create({
+        simulation_id,
+        scenario,
+        question,
+        component,
+      });
+      await queryRunner.manager.save(newScenario);
 
-  return {
-    scenario: savedScenario,
-    answer: savedAnswer,
-  };
-};
+      if (component === "pendaftaran") {
+        if (!patientData || !patientDetailData) {
+          throw new Error("patientData and patientDetailData are required for 'pendaftaran'");
+        }
+
+        const patient = patientRepo.create({ ...patientData, simulation_id });
+        await queryRunner.manager.save(patient);
+
+        const detail = patientDetailRepo.create({
+          ...patientDetailData,
+          patient_id: patient.id,
+        });
+        await queryRunner.manager.save(detail);
+      }
+
+      if (component === "data kunjungan") {
+        if (!patientVisitData) {
+          throw new Error("patientVisitData is required for 'data kunjungan'");
+        }
+
+        const visit = patientVisitRepo.create(patientVisitData);
+        await queryRunner.manager.save(visit);
+      }
+
+      await queryRunner.commitTransaction();
+      return newScenario;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+}

@@ -40,7 +40,7 @@ __decorate([
         nullable: false,
     }),
     __metadata("design:type", String)
-], Scenario.prototype, "componen", void 0);
+], Scenario.prototype, "component", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)

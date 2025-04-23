@@ -26,7 +26,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", Date)
-], PatientVisitData.prototype, "admision_time", void 0);
+], PatientVisitData.prototype, "admission_time", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         type: "enum",

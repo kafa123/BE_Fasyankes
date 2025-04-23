@@ -10,8 +10,12 @@ import { UserTPPRJRouter } from "./routes/user/tpprj.routes";
 import { UserTPPGDRouter } from "./routes/user/tppgd.routes";
 import { UserTPPRIRouter } from "./routes/user/tppri.routes";
 import { AdminSimulationRouter } from "./routes/admin/simulation.routes";
+
 import * as cors from "cors";
 import * as path from "path";
+import { AdminScenarioRouter } from "./routes/admin/scenario.routes";
+import { AdminRegistrationRouter } from "./routes/admin/registration.routes";
+import { AdminAdmissionRouter } from "./routes/admin/admission.routes";
 
 
 dotenv.config();
@@ -23,12 +27,35 @@ app.use(errorHandler);
 const { PORT = 3000 } = process.env;
 
 // endpoint
-app.use("/auth", userRouter);
-app.use("/admin", AdminRouter);
+app.use("/auth", authRouter);
 
+app.use("/admin/user/", AdminUserRouter);
+
+app.use("/tpprj/", UserTPPRJRouter);
+
+app.use("/tppgd/", UserTPPGDRouter);
+
+app.use("/tppri/", UserTPPRIRouter);
+
+// Admin
+
+app.use("/admin/simulation", AdminSimulationRouter);
+
+app.use("/admin/scenario", AdminScenarioRouter);
+
+app.use("/admin/registration", AdminRegistrationRouter);
+
+app.use("/admin/admission", AdminAdmissionRouter);
+
+
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+app.use((req, res) => {
+  res.status(404).json({ message: "Not Found" });
+});
 app.get("*", (req: Request, res: Response) => {
   res.status(505).json({ message: "Bad Request" });
 });
+
 
 
 AppDataSource.initialize()
