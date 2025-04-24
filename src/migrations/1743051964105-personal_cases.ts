@@ -70,6 +70,16 @@ export class PersonalCases1743051964105 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        const table = await queryRunner.getTable("personal_cases");
+        const foreignKey = table!.foreignKeys.find(fk => fk.columnNames.includes("simulation_id"));
+
+        // Drop foreign key first
+        if (foreignKey) {
+            await queryRunner.dropForeignKey("personal_cases", foreignKey);
+        }
+
+        // Then drop the table
+        await queryRunner.dropTable("personal_cases");
     }
 
 }

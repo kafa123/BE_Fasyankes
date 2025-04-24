@@ -30,7 +30,7 @@ export class Scenario {
       enumName: "scenarios_componen_enum",
       nullable: false,
     })
-    componen: string;
+    component: string;
 
     @CreateDateColumn()
     createdAt: Date;

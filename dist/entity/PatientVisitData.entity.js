@@ -26,7 +26,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", Date)
-], PatientVisitData.prototype, "admision_time", void 0);
+], PatientVisitData.prototype, "admission_time", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         type: "enum",
@@ -59,6 +59,7 @@ __decorate([
     __metadata("design:type", Patient_entity_1.Patient)
 ], PatientVisitData.prototype, "patient", void 0);
 exports.PatientVisitData = PatientVisitData = __decorate([
-    (0, typeorm_1.Entity)({ name: "patient_visit_datas" })
+    (0, typeorm_1.Entity)({ name: "patient_visit_datas" }),
+    (0, typeorm_1.Unique)(["patient_id"])
 ], PatientVisitData);
 //# sourceMappingURL=PatientVisitData.entity.js.map

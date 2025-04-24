@@ -6,10 +6,12 @@ import {
     PrimaryGeneratedColumn,
     CreateDateColumn,
     UpdateDateColumn,
+    Unique,
   } from "typeorm";
 import { Patient } from "./Patient.entity";
 
 @Entity({ name: "patient_referral_datas" })
+@Unique(["patient_id"])
 export class PatientReferralData {
     @PrimaryGeneratedColumn("increment")
     id: number;
@@ -33,7 +35,7 @@ export class PatientReferralData {
     referrer_type: string;
 
     @Column({ nullable: false })
-    admision_note: string;
+    admission_note: string;
 
     @CreateDateColumn()
     createdAt: Date;

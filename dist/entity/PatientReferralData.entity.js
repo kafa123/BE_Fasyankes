@@ -46,7 +46,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
-], PatientReferralData.prototype, "admision_note", void 0);
+], PatientReferralData.prototype, "admission_note", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)
@@ -61,6 +61,7 @@ __decorate([
     __metadata("design:type", Patient_entity_1.Patient)
 ], PatientReferralData.prototype, "patient", void 0);
 exports.PatientReferralData = PatientReferralData = __decorate([
-    (0, typeorm_1.Entity)({ name: "patient_referral_datas" })
+    (0, typeorm_1.Entity)({ name: "patient_referral_datas" }),
+    (0, typeorm_1.Unique)(["patient_id"])
 ], PatientReferralData);
 //# sourceMappingURL=PatientReferralData.entity.js.map

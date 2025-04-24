@@ -44,6 +44,14 @@ class Scenarios1743054574272 {
     }
     down(queryRunner) {
         return __awaiter(this, void 0, void 0, function* () {
+            const table = yield queryRunner.getTable("scenarios");
+            const foreignKey = table.foreignKeys.find(fk => fk.columnNames.includes("simulation_id"));
+            // Drop foreign key first
+            if (foreignKey) {
+                yield queryRunner.dropForeignKey("scenarios", foreignKey);
+            }
+            // Then drop the table
+            yield queryRunner.dropTable("scenarios");
         });
     }
 }

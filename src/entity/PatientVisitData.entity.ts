@@ -7,10 +7,12 @@ import {
   Timestamp,
   CreateDateColumn,
   UpdateDateColumn,
+  Unique,
   } from "typeorm";
 import { Patient } from "./Patient.entity";
 
 @Entity({ name: "patient_visit_datas" })
+@Unique(["patient_id"])
 export class PatientVisitData {
     @PrimaryGeneratedColumn("increment")
     id: number;
@@ -19,7 +21,7 @@ export class PatientVisitData {
     patient_id: number;
 
     @Column({ nullable: false })
-    admision_time: Date;
+    admission_time: Date;
 
     @Column({
       type: "enum",

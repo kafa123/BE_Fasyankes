@@ -81,6 +81,7 @@ class Simulations1743006201765 {
     }
     down(queryRunner) {
         return __awaiter(this, void 0, void 0, function* () {
+            yield queryRunner.dropTable("simulations");
         });
     }
 }

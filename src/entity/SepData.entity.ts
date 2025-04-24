@@ -6,10 +6,12 @@ import {
     JoinColumn,
     CreateDateColumn,
     UpdateDateColumn,
+    Unique,
   } from "typeorm";
 import { Patient } from "./Patient.entity";
 
 @Entity({ name: "sep_datas" })
+@Unique(["patient_id"])
 export class SepData {
     @PrimaryGeneratedColumn("increment")
     id: number;

@@ -31,6 +31,7 @@ class Users1741821588080 {
     }
     down(queryRunner) {
         return __awaiter(this, void 0, void 0, function* () {
+            yield queryRunner.query(`DROP TABLE "users"`);
         });
     }
 }

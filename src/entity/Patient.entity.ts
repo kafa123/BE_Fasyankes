@@ -6,6 +6,7 @@ import {
     PrimaryGeneratedColumn,
     CreateDateColumn,
     UpdateDateColumn,
+    Unique,
   } from "typeorm";
 import { Simulation } from "./Simulation.entity";
 import { ValueBelief } from "./ValueBelief.entity";
@@ -17,6 +18,7 @@ import { PatientReferralData } from "./PatientReferralData.entity";
 import { SepData } from "./SepData.entity";
 
 @Entity({ name: "patients" })
+@Unique(["simulation_id"])
 export class Patient {
     @PrimaryGeneratedColumn("increment")
     id: number;
@@ -36,7 +38,7 @@ export class Patient {
       enumName: "patients_gender_enum",
       nullable: false,
     })
-    category: string;
+    gender: string;
 
     @Column({ nullable: false })
     date_of_birth: Date;

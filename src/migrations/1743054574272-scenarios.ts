@@ -38,6 +38,16 @@ export class Scenarios1743054574272 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        const table = await queryRunner.getTable("scenarios");
+        const foreignKey = table!.foreignKeys.find(fk => fk.columnNames.includes("simulation_id"));
+
+        // Drop foreign key first
+        if (foreignKey) {
+            await queryRunner.dropForeignKey("scenarios", foreignKey);
+        }
+
+        // Then drop the table
+        await queryRunner.dropTable("scenarios");
     }
 
 }

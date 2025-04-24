@@ -20,8 +20,14 @@ const tpprj_routes_1 = require("./routes/user/tpprj.routes");
 const tppgd_routes_1 = require("./routes/user/tppgd.routes");
 const tppri_routes_1 = require("./routes/user/tppri.routes");
 const simulation_routes_1 = require("./routes/admin/simulation.routes");
+const cors = require("cors");
+const path = require("path");
+const scenario_routes_1 = require("./routes/admin/scenario.routes");
+const registration_routes_1 = require("./routes/admin/registration.routes");
+const admission_routes_1 = require("./routes/admin/admission.routes");
 dotenv.config();
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(errorHandler_1.errorHandler);
 const { PORT = 3000 } = process.env;
@@ -30,17 +36,33 @@ app.use("/auth", auth_routes_1.authRouter);
 app.use("/admin/user/", user_routes_1.AdminUserRouter);
 app.use("/tpprj/", tpprj_routes_1.UserTPPRJRouter);
 app.use("/tppgd/", tppgd_routes_1.UserTPPGDRouter);
+
+// Admin
+app.use("/admin/simulation", simulation_routes_1.AdminSimulationRouter);
+app.use("/admin/scenario", scenario_routes_1.AdminScenarioRouter);
+app.use("/admin/registration", registration_routes_1.AdminRegistrationRouter);
+app.use("/admin/admission", admission_routes_1.AdminAdmissionRouter);
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+app.use((req, res) => {
+    res.status(404).json({ message: "Not Found" });
+});
+
 app.use("/admin/simulation", simulation_routes_1.AdminSimulationRouter);
 app.use("/tppri/", tppri_routes_1.UserTPPRIRouter);
+
 app.get("*", (req, res) => {
     res.status(505).json({ message: "Bad Request" });
 });
 data_source_1.AppDataSource.initialize()
     .then(() => __awaiter(void 0, void 0, void 0, function* () {
-    app.listen(PORT, () => {
-        console.log("Server is running on http://localhost:" + PORT);
+    // app.listen(PORT, () => {
+    //   console.log("Server is running on http://localhost:" + PORT);
+    // });
+    // console.log("Data Source has been initialized!");
+    app.listen(Number(PORT), "0.0.0.0", () => {
+        console.log(`✅ Server is running at:`);
+        console.log(`- Local:    http://localhost:${PORT}`);
     });
-    console.log("Data Source has been initialized!");
 }))
     .catch((error) => console.log(error));
 //# sourceMappingURL=index.js.map
