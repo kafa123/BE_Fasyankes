@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 dotenv.config();
 const authentification = (req, res, next) => {
+    console.log("Masuk sini kok");
     const header = req.headers.authorization;
     if (!header) {
         res.status(401).json({ message: "Unauthorized" });

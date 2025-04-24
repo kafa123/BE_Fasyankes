@@ -69,4 +69,106 @@ export class AuthController {
     return;
   }
 
+  static async getProfile(req: Request, res: Response) {
+    try {
+        
+        const userId = req["currentUser"]?.id;
+
+        if (!userId) {
+            res.status(400).json({ error: "User ID is required" });
+            return;
+        }
+
+        const repo = AppDataSource.getRepository(User);
+
+        const detailProfile = await repo.findOne({ where: { id: userId } });
+
+      res.status(200).json({ data: detailProfile });
+      return;
+      
+    } catch (error) {
+      console.error("Error fetching personal cases:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+      return;
+    }
+  }
+
+  static async updateProfile(req: Request, res: Response) {
+    try {
+
+      const userId = req["currentUser"]?.id;
+  
+      if (isNaN(userId)) {
+        res.status(400).json({ error: "Invalid user ID" });
+        return;
+      }
+  
+      const repo = AppDataSource.getRepository(User);
+      let user = await repo.findOneBy({ id: userId });
+  
+      if (!user) {
+        res.status(404).json({ error: "User not found" });
+        return;
+      }
+  
+      repo.merge(user, req.body); 
+
+      await repo.save(user);
+  
+      res.status(200).json({ message: "User updated successfully", user });
+      return;
+  
+    } catch (error) {
+      console.error("Error updating user profile:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+      return;
+    }
+  }
+
+  static async postNewPassword(req: Request, res: Response) {
+    try {
+
+      const userId = req["currentUser"]?.id;
+  
+      if (isNaN(userId)) {
+        res.status(400).json({ error: "Invalid user ID" });
+        return;
+      }
+
+      const { old_password, new_password } = req.body;
+
+      if ( !old_password || !new_password) {
+        res.status(400).json({ error: "Masukkan password lama dan baru" });
+        return;
+      }
+
+      const repo = AppDataSource.getRepository(User)
+      let user = await repo.findOneBy({ id: userId });
+
+      if (!user) {
+        res.status(404).json({ error: "User not found" });
+        return;
+      }
+
+      const isMatch = encrypt.comparepassword(user.password, old_password);
+
+      if (!isMatch) {
+        res.status(401).json({ error: "Old password is incorrect" });
+        return;
+      }
+
+      user.password = await encrypt.encryptpass(new_password);
+      await repo.save(user);
+    
+      res.status(200).json({ message: "Password updated successfully" });
+      return;
+
+    } catch (error) {
+      console.error("Error Post Old Password:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+      return;
+    }
+  }
+  
+
 }

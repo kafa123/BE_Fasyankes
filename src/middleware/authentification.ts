@@ -8,6 +8,7 @@ export const authentification = (
   res: Response,
   next: NextFunction
 ): void => {
+  console.log("Masuk sini kok");
   const header = req.headers.authorization;
   if (!header) {
     res.status(401).json({ message: "Unauthorized" });

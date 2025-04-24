@@ -1,11 +1,6 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-
 import * as dotenv from "dotenv";
-import { User } from "./entity/User.entity";
-import { UserCount } from "./entity/UserCount.entity";
-import { PersonalCase } from "./entity/PersonalCase.entity";
-import { Simulation } from "./entity/Simulation.entity";
 
 dotenv.config();
 
