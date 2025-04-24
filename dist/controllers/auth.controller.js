@@ -156,6 +156,24 @@ class AuthController {
             }
         });
     }
+    static requestPasswordReset(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const repo = data_source_1.AppDataSource.getRepository(User_entity_1.User);
+                const { email } = req.body;
+                const user = yield repo.findOne({ where: { email: email } });
+                if (!user) {
+                    res.status(404).json({ error: "User not found" });
+                    return;
+                }
+            }
+            catch (error) {
+                console.error("Error Post Old Password:", error);
+                res.status(500).json({ error: "Internal Server Error" });
+                return;
+            }
+        });
+    }
 }
 exports.AuthController = AuthController;
 //# sourceMappingURL=auth.controller.js.map

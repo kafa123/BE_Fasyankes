@@ -36,7 +36,7 @@ app.use("/auth", auth_routes_1.authRouter);
 app.use("/admin/user/", user_routes_1.AdminUserRouter);
 app.use("/tpprj/", tpprj_routes_1.UserTPPRJRouter);
 app.use("/tppgd/", tppgd_routes_1.UserTPPGDRouter);
-
+app.use("/tppri/", tppri_routes_1.UserTPPRIRouter);
 // Admin
 app.use("/admin/simulation", simulation_routes_1.AdminSimulationRouter);
 app.use("/admin/scenario", scenario_routes_1.AdminScenarioRouter);
@@ -46,10 +46,6 @@ app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 app.use((req, res) => {
     res.status(404).json({ message: "Not Found" });
 });
-
-app.use("/admin/simulation", simulation_routes_1.AdminSimulationRouter);
-app.use("/tppri/", tppri_routes_1.UserTPPRIRouter);
-
 app.get("*", (req, res) => {
     res.status(505).json({ message: "Bad Request" });
 });
