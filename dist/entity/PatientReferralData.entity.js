@@ -61,6 +61,7 @@ __decorate([
     __metadata("design:type", Patient_entity_1.Patient)
 ], PatientReferralData.prototype, "patient", void 0);
 exports.PatientReferralData = PatientReferralData = __decorate([
-    (0, typeorm_1.Entity)({ name: "patient_referral_datas" })
+    (0, typeorm_1.Entity)({ name: "patient_referral_datas" }),
+    (0, typeorm_1.Unique)(["patient_id"])
 ], PatientReferralData);
 //# sourceMappingURL=PatientReferralData.entity.js.map

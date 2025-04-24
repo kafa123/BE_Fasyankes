@@ -94,6 +94,42 @@ class AdmissionController {
             }
         });
     }
+    static update(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const simulation_id = parseInt(req.params.simulation_id);
+                const patient = yield data_source_1.AppDataSource.getRepository(Patient_entity_1.Patient).findOneByOrFail({ simulation_id });
+                const visitRepo = data_source_1.AppDataSource.getRepository(PatientVisitData_entity_1.PatientVisitData);
+                const referralRepo = data_source_1.AppDataSource.getRepository(PatientReferralData_entity_1.PatientReferralData);
+                const sepRepo = data_source_1.AppDataSource.getRepository(SepData_entity_1.SepData);
+                yield visitRepo.update({ patient_id: patient.id }, req.body.visit || {});
+                yield referralRepo.update({ patient_id: patient.id }, req.body.referral || {});
+                yield sepRepo.update({ patient_id: patient.id }, req.body.sep || {});
+                res.status(200).json({ message: "Admission data updated successfully" });
+            }
+            catch (e) {
+                res.status(500).json({ message: "Failed to update data", error: e });
+            }
+        });
+    }
+    static delete(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const simulation_id = parseInt(req.params.simulation_id);
+                const patient = yield data_source_1.AppDataSource.getRepository(Patient_entity_1.Patient).findOneByOrFail({ simulation_id: simulation_id });
+                const visitRepo = data_source_1.AppDataSource.getRepository(PatientVisitData_entity_1.PatientVisitData);
+                const referralRepo = data_source_1.AppDataSource.getRepository(PatientReferralData_entity_1.PatientReferralData);
+                const sepRepo = data_source_1.AppDataSource.getRepository(SepData_entity_1.SepData);
+                yield visitRepo.delete({ patient_id: patient.id });
+                yield referralRepo.delete({ patient_id: patient.id });
+                yield sepRepo.delete({ patient_id: patient.id });
+                res.status(200).json({ message: "Admission data deleted successfully" });
+            }
+            catch (e) {
+                res.status(500).json({ message: "Failed to delete data", error: e });
+            }
+        });
+    }
 }
 exports.AdmissionController = AdmissionController;
 //# sourceMappingURL=admission.controller.js.map

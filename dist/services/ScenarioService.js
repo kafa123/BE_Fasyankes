@@ -9,31 +9,60 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createScenarioWithAnswer = void 0;
-// services/scenarioService.ts
+exports.ScenarioService = void 0;
+// service/ScenarioService.ts
 const data_source_1 = require("../data-source");
 const Scenario_entity_1 = require("../entity/Scenario.entity");
-const Answer_entity_1 = require("../entity/Answer.entity");
-const createScenarioWithAnswer = (dto) => __awaiter(void 0, void 0, void 0, function* () {
-    const scenarioRepo = data_source_1.AppDataSource.getRepository(Scenario_entity_1.Scenario);
-    const answerRepo = data_source_1.AppDataSource.getRepository(Answer_entity_1.Answer);
-    const scenario = scenarioRepo.create({
-        simulation_id: dto.simulation_id,
-        scenario: dto.scenario,
-        question: dto.question,
-        component: dto.component,
-    });
-    const savedScenario = yield scenarioRepo.save(scenario);
-    const answer = answerRepo.create({
-        scenario_id: savedScenario.id,
-        answer_text: dto.answer_text,
-        answer_image: dto.answer_image,
-    });
-    const savedAnswer = yield answerRepo.save(answer);
-    return {
-        scenario: savedScenario,
-        answer: savedAnswer,
-    };
-});
-exports.createScenarioWithAnswer = createScenarioWithAnswer;
+const Patient_entity_1 = require("../entity/Patient.entity");
+const PatientDetail_entity_1 = require("../entity/PatientDetail.entity");
+const PatientVisitData_entity_1 = require("../entity/PatientVisitData.entity");
+class ScenarioService {
+    static createScenario(input) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { scenario, simulation_id, question, component, patientData, patientDetailData, patientVisitData, } = input;
+            const scenarioRepo = data_source_1.AppDataSource.getRepository(Scenario_entity_1.Scenario);
+            const patientRepo = data_source_1.AppDataSource.getRepository(Patient_entity_1.Patient);
+            const patientDetailRepo = data_source_1.AppDataSource.getRepository(PatientDetail_entity_1.PatientDetail);
+            const patientVisitRepo = data_source_1.AppDataSource.getRepository(PatientVisitData_entity_1.PatientVisitData);
+            const queryRunner = data_source_1.AppDataSource.createQueryRunner();
+            yield queryRunner.connect();
+            yield queryRunner.startTransaction();
+            try {
+                const newScenario = scenarioRepo.create({
+                    simulation_id,
+                    scenario,
+                    question,
+                    component,
+                });
+                yield queryRunner.manager.save(newScenario);
+                if (component === "pendaftaran") {
+                    if (!patientData || !patientDetailData) {
+                        throw new Error("patientData and patientDetailData are required for 'pendaftaran'");
+                    }
+                    const patient = patientRepo.create(Object.assign(Object.assign({}, patientData), { simulation_id }));
+                    yield queryRunner.manager.save(patient);
+                    const detail = patientDetailRepo.create(Object.assign(Object.assign({}, patientDetailData), { patient_id: patient.id }));
+                    yield queryRunner.manager.save(detail);
+                }
+                if (component === "data kunjungan") {
+                    if (!patientVisitData) {
+                        throw new Error("patientVisitData is required for 'data kunjungan'");
+                    }
+                    const visit = patientVisitRepo.create(patientVisitData);
+                    yield queryRunner.manager.save(visit);
+                }
+                yield queryRunner.commitTransaction();
+                return newScenario;
+            }
+            catch (error) {
+                yield queryRunner.rollbackTransaction();
+                throw error;
+            }
+            finally {
+                yield queryRunner.release();
+            }
+        });
+    }
+}
+exports.ScenarioService = ScenarioService;
 //# sourceMappingURL=ScenarioService.js.map

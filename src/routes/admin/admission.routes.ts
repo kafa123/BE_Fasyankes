@@ -19,18 +19,18 @@ Router.get(
   AdmissionController.getOne
 )
 
-// Router.put(
-//   "/update-scenario/:id",
-//   authentification,
-//   authorization(["admin"]),
-//   RegistrationController.update
-// )
-// Router.delete(
-//   "/delete-scenario/:id",
-//   authentification,
-//   authorization(["admin"]),
-//   RegistrationController.delete
-// )
+Router.put(
+  "/update-admission/:simulation_id",
+  authentification,
+  authorization(["admin"]),
+  AdmissionController.update
+)
+Router.delete(
+  "/delete-admission/:simulation_id",
+  authentification,
+  authorization(["admin"]),
+  AdmissionController.delete
+)
 
 
 export { Router as AdminAdmissionRouter };

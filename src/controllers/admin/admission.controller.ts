@@ -4,7 +4,6 @@ import { PatientVisitData } from "../../entity/PatientVisitData.entity";
 import { PatientReferralData } from "../../entity/PatientReferralData.entity";
 import { SepData } from "../../entity/SepData.entity";
 import { Patient } from "../../entity/Patient.entity";
-import { error } from "console";
 
 export class AdmissionController {
   static async create(req: Request, res: Response): Promise<void> {
@@ -102,6 +101,46 @@ export class AdmissionController {
       
     } catch (e) {
       res.status(500).json({message:"Internal Server Error", error:e});
+    }
+  }
+
+  static async update(req: Request, res: Response): Promise<void> {
+    try {
+      const simulation_id = parseInt(req.params.simulation_id);
+      const patient = await AppDataSource.getRepository(Patient).findOneByOrFail({ simulation_id });
+
+      const visitRepo = AppDataSource.getRepository(PatientVisitData);
+      const referralRepo = AppDataSource.getRepository(PatientReferralData);
+      const sepRepo = AppDataSource.getRepository(SepData);
+
+      await visitRepo.update({ patient_id: patient.id }, req.body.visit || {});
+      await referralRepo.update({ patient_id: patient.id }, req.body.referral || {});
+      await sepRepo.update({ patient_id: patient.id }, req.body.sep || {});
+
+      res.status(200).json({ message: "Admission data updated successfully" });
+
+    } catch (e) {
+      res.status(500).json({ message: "Failed to update data", error: e });
+    }
+  }
+
+  static async delete(req: Request, res: Response): Promise<void> {
+    try {
+      const simulation_id = parseInt(req.params.simulation_id);
+      const patient = await AppDataSource.getRepository(Patient).findOneByOrFail({ simulation_id:simulation_id });
+
+      const visitRepo = AppDataSource.getRepository(PatientVisitData);
+      const referralRepo = AppDataSource.getRepository(PatientReferralData);
+      const sepRepo = AppDataSource.getRepository(SepData);
+
+      await visitRepo.delete({ patient_id: patient.id });
+      await referralRepo.delete({ patient_id: patient.id });
+      await sepRepo.delete({ patient_id: patient.id });
+
+      res.status(200).json({ message: "Admission data deleted successfully" });
+
+    } catch (e) {
+      res.status(500).json({ message: "Failed to delete data", error: e });
     }
   }
 }

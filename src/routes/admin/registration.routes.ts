@@ -19,18 +19,18 @@ Router.get(
   RegistrationController.getOne
 )
 
-// Router.put(
-//   "/update-scenario/:id",
-//   authentification,
-//   authorization(["admin"]),
-//   RegistrationController.update
-// )
-// Router.delete(
-//   "/delete-scenario/:id",
-//   authentification,
-//   authorization(["admin"]),
-//   RegistrationController.delete
-// )
+Router.put(
+  "/update-registration/:id",
+  authentification,
+  authorization(["admin"]),
+  RegistrationController.update
+)
+Router.delete(
+  "/delete-registration/:id",
+  authentification,
+  authorization(["admin"]),
+  RegistrationController.delete
+)
 
 
 export { Router as AdminRegistrationRouter };

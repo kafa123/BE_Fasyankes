@@ -9,4 +9,6 @@ const Router = express.Router();
 exports.AdminRegistrationRouter = Router;
 Router.post("/post-registration", authentification_1.authentification, (0, authorization_1.authorization)(["admin"]), registration_controller_1.RegistrationController.create);
 Router.get("/get-registration/:id", registration_controller_1.RegistrationController.getOne);
+Router.put("/update-registration/:id", authentification_1.authentification, (0, authorization_1.authorization)(["admin"]), registration_controller_1.RegistrationController.update);
+Router.delete("/delete-registration/:id", authentification_1.authentification, (0, authorization_1.authorization)(["admin"]), registration_controller_1.RegistrationController.delete);
 //# sourceMappingURL=registration.routes.js.map

@@ -117,6 +117,7 @@ __decorate([
     __metadata("design:type", SepData_entity_1.SepData)
 ], Patient.prototype, "sepData", void 0);
 exports.Patient = Patient = __decorate([
-    (0, typeorm_1.Entity)({ name: "patients" })
+    (0, typeorm_1.Entity)({ name: "patients" }),
+    (0, typeorm_1.Unique)(["simulation_id"])
 ], Patient);
 //# sourceMappingURL=Patient.entity.js.map

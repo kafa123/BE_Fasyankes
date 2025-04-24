@@ -61,6 +61,7 @@ __decorate([
     __metadata("design:type", Patient_entity_1.Patient)
 ], SepData.prototype, "patient", void 0);
 exports.SepData = SepData = __decorate([
-    (0, typeorm_1.Entity)({ name: "sep_datas" })
+    (0, typeorm_1.Entity)({ name: "sep_datas" }),
+    (0, typeorm_1.Unique)(["patient_id"])
 ], SepData);
 //# sourceMappingURL=SepData.entity.js.map
