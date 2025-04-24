@@ -169,6 +169,31 @@ export class AuthController {
       return;
     }
   }
+
+  static async requestPasswordReset(req: Request, res: Response) {
+    try {
+
+      const repo = AppDataSource.getRepository(User);
+
+      const { email } = req.body;
+
+      const user = await repo.findOne({ where: { email: email } });
+
+      if (!user) {
+        res.status(404).json({ error: "User not found" });
+        return;
+      }
+
+      
+
+
+
+    } catch (error) {
+      console.error("Error Post Old Password:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+      return;
+    }
+  }
   
 
 }
