@@ -27,6 +27,19 @@ class encrypt {
     static generateToken(payload) {
         return jwt.sign(payload, JWT_SECRET, { expiresIn: "1d" });
     }
+    static generateTokenPasswordToken(payload, password) {
+        const secret = JWT_SECRET + password;
+        return jwt.sign(payload, secret, { expiresIn: "1h" });
+    }
+    static verifyTokenPasswordToken(token, password) {
+        const secret = JWT_SECRET + password;
+        try {
+            return jwt.verify(token, secret);
+        }
+        catch (error) {
+            throw new Error('Invalid or expired token');
+        }
+    }
 }
 exports.encrypt = encrypt;
 //# sourceMappingURL=encrypt.js.map

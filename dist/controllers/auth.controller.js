@@ -14,6 +14,8 @@ const data_source_1 = require("../data-source");
 const User_entity_1 = require("../entity/User.entity");
 const encrypt_1 = require("../helpers/encrypt");
 const UserCount_entity_1 = require("../entity/UserCount.entity");
+const dotenv = require("dotenv");
+dotenv.config();
 class AuthController {
     static login(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -166,9 +168,67 @@ class AuthController {
                     res.status(404).json({ error: "User not found" });
                     return;
                 }
+                const token = encrypt_1.encrypt.generateTokenPasswordToken({ id: user.id }, user.password);
+                const resetURL = `http://localhost:19200/auth/resetpassword/${user.id}/${token}`;
+                const nodemailer = require('nodemailer');
+                const transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: process.env.EMAIL_USER,
+                        pass: process.env.EMAIL_PASS,
+                    },
+                });
+                const mailOptions = {
+                    to: user.email,
+                    from: process.env.EMAIL,
+                    subject: 'Password Reset Request',
+                    text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
+        Please click on the following link, or paste this into your browser to complete the process:\n\n
+        ${resetURL}\n\n
+        If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+                };
+                yield transporter.sendMail(mailOptions);
+                res.status(200).json({ message: 'Password reset link sent' });
             }
             catch (error) {
-                console.error("Error Post Old Password:", error);
+                res.status(500).json({ error: "Internal Server Error" });
+                return;
+            }
+        });
+    }
+    static resetPassword(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id, token } = req.params;
+            const { password } = req.body;
+            console.log("masuk sini kok");
+            console.log("id", id);
+            const parsedId = Number(id);
+            if (isNaN(parsedId)) {
+                res.status(400).json({ error: "Invalid user ID" });
+                return;
+            }
+            try {
+                const repo = data_source_1.AppDataSource.getRepository(User_entity_1.User);
+                let user = yield repo.findOneBy({ id: parsedId });
+                if (!user) {
+                    res.status(404).json({ error: "User not found" });
+                    return;
+                }
+                try {
+                    encrypt_1.encrypt.verifyTokenPasswordToken(token, user.password); // Verifikasi token
+                }
+                catch (error) {
+                    console.error('Token verification failed:', error);
+                    res.status(400).json({ error: 'Invalid or expired token' });
+                    return;
+                }
+                user.password = yield encrypt_1.encrypt.encryptpass(password);
+                yield repo.save(user);
+                res.status(200).json({ message: "Password successfully updated" });
+                return;
+            }
+            catch (error) {
+                console.error("Error Post Reset Password:", error);
                 res.status(500).json({ error: "Internal Server Error" });
                 return;
             }
