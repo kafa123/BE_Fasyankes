@@ -25,6 +25,7 @@ const path = require("path");
 const scenario_routes_1 = require("./routes/admin/scenario.routes");
 const registration_routes_1 = require("./routes/admin/registration.routes");
 const admission_routes_1 = require("./routes/admin/admission.routes");
+const result_routes_1 = require("./routes/user/result.routes");
 dotenv.config();
 const app = express();
 app.use(cors());
@@ -37,6 +38,7 @@ app.use("/admin/user/", user_routes_1.AdminUserRouter);
 app.use("/tpprj/", tpprj_routes_1.UserTPPRJRouter);
 app.use("/tppgd/", tppgd_routes_1.UserTPPGDRouter);
 app.use("/tppri/", tppri_routes_1.UserTPPRIRouter);
+app.use("/", result_routes_1.UserResultRoutes);
 // Admin
 app.use("/admin/simulation", simulation_routes_1.AdminSimulationRouter);
 app.use("/admin/scenario", scenario_routes_1.AdminScenarioRouter);

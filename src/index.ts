@@ -16,6 +16,7 @@ import * as path from "path";
 import { AdminScenarioRouter } from "./routes/admin/scenario.routes";
 import { AdminRegistrationRouter } from "./routes/admin/registration.routes";
 import { AdminAdmissionRouter } from "./routes/admin/admission.routes";
+import { UserResultRoutes } from "./routes/user/result.routes";
 
 
 dotenv.config();
@@ -36,6 +37,8 @@ app.use("/tpprj/", UserTPPRJRouter);
 app.use("/tppgd/", UserTPPGDRouter);
 
 app.use("/tppri/", UserTPPRIRouter);
+
+app.use("/", UserResultRoutes);
 
 // Admin
 
