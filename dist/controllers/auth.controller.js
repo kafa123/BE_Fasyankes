@@ -29,11 +29,17 @@ class AuthController {
                 }
                 const userRepository = data_source_1.AppDataSource.getRepository(User_entity_1.User);
                 const user = yield userRepository.findOne({ where: { email } });
+                if (!user) {
+                    res
+                        .status(404)
+                        .json({ message: "Invalid Email" });
+                    return;
+                }
                 const isPasswordValid = encrypt_1.encrypt.comparepassword(user.password, password);
                 if (!user || !isPasswordValid) {
                     res
                         .status(404)
-                        .json({ message: "User not found" });
+                        .json({ message: "Password Salah" });
                     return;
                 }
                 const token = encrypt_1.encrypt.generateToken({ id: user.id });
@@ -56,6 +62,12 @@ class AuthController {
     static signup(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { name, email, password, profesion, institute, phone_number, role } = req.body;
+            if (!name || !email || !password || !role || !phone_number) {
+                res.status(400).json({
+                    message: "Name, email, password, phone, and role are required",
+                });
+                return;
+            }
             const encryptedPassword = yield encrypt_1.encrypt.encryptpass(password);
             const user = new User_entity_1.User();
             user.name = name;

@@ -61,6 +61,11 @@ class Simulations1743006201765 {
                         isNullable: false,
                     },
                     {
+                        name: "symptoms",
+                        type: "text",
+                        isNullable: true,
+                    },
+                    {
                         name: "case_description",
                         type: "text",
                         isNullable: false,

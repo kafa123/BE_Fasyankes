@@ -27,6 +27,7 @@ export class AdminSimulationController {
         category, 
         perujuk,
         payment_method, 
+        symptoms,
         case_description, 
         diagnose } = req.body;
 
@@ -43,6 +44,7 @@ export class AdminSimulationController {
         patient_type,
         case_type,
         payment_method,
+        symptoms,
         case_description,
         diagnose,
         category,

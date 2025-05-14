@@ -13,6 +13,7 @@ export class AuthController {
   static async login(req: Request, res: Response) {
     try {
       const { email, password } = req.body;
+
       if (!email || !password) {
         res
           .status(500)
@@ -23,12 +24,19 @@ export class AuthController {
       const userRepository = AppDataSource.getRepository(User);
       const user = await userRepository.findOne({ where: { email } });
 
+      if (!user) {
+        res
+          .status(404)
+          .json({ message: "Invalid Email" });
+        return;
+      }
+
       const isPasswordValid = encrypt.comparepassword(user.password, password);
 
       if (!user || !isPasswordValid) {
         res
           .status(404)
-          .json({ message: "User not found" });
+          .json({ message: "Password Salah" });
         return;
       }
 
@@ -54,6 +62,14 @@ export class AuthController {
 
   static async signup(req: Request, res: Response) {
     const { name, email, password, profesion, institute, phone_number, role } = req.body;
+
+    if (!name || !email || !password || !role || !phone_number) {
+      res.status(400).json({
+        message: "Name, email, password, phone, and role are required",
+      });
+      return;
+    }
+
     const encryptedPassword = await encrypt.encryptpass(password);
     const user = new User();
     user.name = name;

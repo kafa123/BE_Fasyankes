@@ -33,7 +33,7 @@ class AdminSimulationController {
     static create(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { patient_type, case_type, category, perujuk, payment_method, case_description, diagnose } = req.body;
+                const { patient_type, case_type, category, perujuk, payment_method, symptoms, case_description, diagnose } = req.body;
                 if (!patient_type || !case_type || !category || !payment_method || !case_description || !diagnose) {
                     res.status(400).json({ error: "All fields are required" });
                     return;
@@ -45,6 +45,7 @@ class AdminSimulationController {
                     patient_type,
                     case_type,
                     payment_method,
+                    symptoms,
                     case_description,
                     diagnose,
                     category,
