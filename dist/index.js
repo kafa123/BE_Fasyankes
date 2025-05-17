@@ -26,6 +26,7 @@ const scenario_routes_1 = require("./routes/admin/scenario.routes");
 const registration_routes_1 = require("./routes/admin/registration.routes");
 const admission_routes_1 = require("./routes/admin/admission.routes");
 const result_routes_1 = require("./routes/user/result.routes");
+const public_routes_1 = require("./routes/public.routes");
 dotenv.config();
 const app = express();
 app.use(cors());
@@ -44,6 +45,7 @@ app.use("/admin/simulation", simulation_routes_1.AdminSimulationRouter);
 app.use("/admin/scenario", scenario_routes_1.AdminScenarioRouter);
 app.use("/admin/registration", registration_routes_1.AdminRegistrationRouter);
 app.use("/admin/admission", admission_routes_1.AdminAdmissionRouter);
+app.use("/", public_routes_1.PublicRouter);
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 app.use((req, res) => {
     res.status(404).json({ message: "Not Found" });

@@ -65,6 +65,16 @@ class UserResultController {
             }
         });
     }
+    static postSimilarity(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+            }
+            catch (error) {
+                console.error(error);
+                res.status(500).json({ error: "Internal Server Error" });
+            }
+        });
+    }
 }
 exports.UserResultController = UserResultController;
 //# sourceMappingURL=result.controller.js.map

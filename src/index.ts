@@ -17,6 +17,7 @@ import { AdminScenarioRouter } from "./routes/admin/scenario.routes";
 import { AdminRegistrationRouter } from "./routes/admin/registration.routes";
 import { AdminAdmissionRouter } from "./routes/admin/admission.routes";
 import { UserResultRoutes } from "./routes/user/result.routes";
+import { PublicRouter } from "./routes/public.routes";
 
 
 dotenv.config();
@@ -49,6 +50,8 @@ app.use("/admin/scenario", AdminScenarioRouter);
 app.use("/admin/registration", AdminRegistrationRouter);
 
 app.use("/admin/admission", AdminAdmissionRouter);
+
+app.use("/", PublicRouter);
 
 
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));

@@ -30,6 +30,22 @@ class AdminSimulationController {
             }
         });
     }
+    static getOne(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const repo = data_source_1.AppDataSource.getRepository(Simulation_entity_1.Simulation);
+                const simulation = yield repo.findOneBy({ id: parseInt(req.params.id) });
+                if (!simulation) {
+                    res.status(404).json({ error: "Simulation not found" });
+                    return;
+                }
+                res.status(200).json({ data: simulation });
+            }
+            catch (error) {
+                res.status(500).json({ error: "Internal Server Error" });
+            }
+        });
+    }
     static create(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
