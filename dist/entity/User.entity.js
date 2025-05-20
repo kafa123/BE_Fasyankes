@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const typeorm_1 = require("typeorm");
 const PersonalCase_entity_1 = require("./PersonalCase.entity");
+const UserScenario_entity_1 = require("./UserScenario.entity");
 let User = class User {
 };
 exports.User = User;
@@ -59,6 +60,10 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => PersonalCase_entity_1.PersonalCase, (personalCase) => personalCase.user),
     __metadata("design:type", Array)
 ], User.prototype, "personalCases", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => UserScenario_entity_1.UserScenario, (userScenario) => userScenario.user),
+    __metadata("design:type", Array)
+], User.prototype, "userScenario", void 0);
 exports.User = User = __decorate([
     (0, typeorm_1.Entity)({ name: "users" })
 ], User);

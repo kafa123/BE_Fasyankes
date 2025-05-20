@@ -6,9 +6,11 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from "typeorm";
 import { Simulation } from "./Simulation.entity";
 import { Answer } from "./Answer.entity";
+import { UserScenario } from "./UserScenario.entity";
 
 @Entity({ name: "scenarios" })
 export class Scenario {
@@ -44,4 +46,7 @@ export class Scenario {
 
     @OneToOne(() => Answer, (answer) => answer.scenario)
     answer: Answer;
+
+    @OneToMany(() => UserScenario, (userScenario) => userScenario.scenario)
+    userScenario: UserScenario[];
 }

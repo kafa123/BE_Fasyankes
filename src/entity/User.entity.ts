@@ -7,6 +7,7 @@ import {
     OneToMany
   } from "typeorm";
 import { PersonalCase } from "./PersonalCase.entity";
+import { UserScenario } from "./UserScenario.entity";
   
   @Entity({ name: "users" })
   export class User {
@@ -42,4 +43,7 @@ import { PersonalCase } from "./PersonalCase.entity";
 
     @OneToMany(() => PersonalCase, (personalCase) => personalCase.user)
     personalCases: PersonalCase[];
+
+    @OneToMany(() => UserScenario, (userScenario) => userScenario.user)
+    userScenario: UserScenario[];
   }
