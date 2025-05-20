@@ -21,12 +21,15 @@ export class Scenario {
     @Column({ nullable: false })
     scenario: string;
 
+    @Column({ nullable:false})
+    order: number;
+
     @Column({ nullable: false })
     question: string;
 
     @Column({
       type: "enum",
-      enum: ["Pendaftaran", "Data Kunjungan", "Data Rujukan", "Data SEP"],
+      enum: ["pendaftaran","admission-rawat-jalan","admission-rawat-inap","admission-gawat-darurat"],
       enumName: "scenarios_componen_enum",
       nullable: false,
     })

@@ -13,28 +13,36 @@ export class ScenarioController {
         question,
         component,
         answer_text,
-        answer_image
+        order 
       } = req.body;
   
-      if (!scenario || !question || !component) {
-        res.status(400).json({ error: scenario + component + question });
+      if (!scenario || !question || !component || !order) {
+        res.status(400).json({ error: "Required fields are missing" });
         return;
       }
   
       const scenarioRepo = AppDataSource.getRepository(Scenario);
       const answerRepo = AppDataSource.getRepository(Answer);
   
+      await scenarioRepo
+        .createQueryBuilder()
+        .update(Scenario)
+        .set({ order: () => `"order" + 1` })
+        .where("simulation_id = :simulation_id AND \"order\" >= :order", { simulation_id, order })
+        .execute();
+  
       const newScenario = scenarioRepo.create({
         simulation_id,
         scenario,
         question,
         component,
+        order
       });
   
       const savedScenario = await scenarioRepo.save(newScenario);
   
       const answerImagePath = req.file ? `/uploads/${req.file.filename}` : null;
-
+  
       const newAnswer = answerRepo.create({
         scenario_id: savedScenario.id,
         answer_text,
@@ -42,7 +50,6 @@ export class ScenarioController {
       });
   
       const savedAnswer = await answerRepo.save(newAnswer);
-  
   
       res.status(201).json({
         message: "Scenario and answer created successfully",
@@ -52,9 +59,10 @@ export class ScenarioController {
   
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({ error: "Internal Server Error" ,message:error});
     }
   }
+  
 
 
   static async update(req: Request, res: Response):Promise<void> {

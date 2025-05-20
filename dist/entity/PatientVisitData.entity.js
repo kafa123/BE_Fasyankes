@@ -24,7 +24,7 @@ __decorate([
     __metadata("design:type", Number)
 ], PatientVisitData.prototype, "patient_id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ nullable: false }),
+    (0, typeorm_1.Column)({ type: "timestamp", nullable: false, default: () => "CURRENT_TIMESTAMP" }),
     __metadata("design:type", Date)
 ], PatientVisitData.prototype, "admission_time", void 0);
 __decorate([

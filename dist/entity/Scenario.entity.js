@@ -30,12 +30,16 @@ __decorate([
 ], Scenario.prototype, "scenario", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: false }),
+    __metadata("design:type", Number)
+], Scenario.prototype, "order", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
 ], Scenario.prototype, "question", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         type: "enum",
-        enum: ["Pendaftaran", "Data Kunjungan", "Data Rujukan", "Data SEP"],
+        enum: ["pendaftaran", "admission-rawat-jalan", "admission-rawat-inap", "admission-gawat-darurat"],
         enumName: "scenarios_componen_enum",
         nullable: false,
     }),

@@ -58,7 +58,7 @@ export class AuthController {
     user.profesion = profesion;
     user.institute = institute;
     user.phone_number = phone_number;
-    user.role = role;
+    user.role = role ?? 'user';
 
     const userRepository = AppDataSource.getRepository(User);
     await userRepository.save(user);

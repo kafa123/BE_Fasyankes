@@ -16,13 +16,15 @@ import * as path from "path";
 import { AdminScenarioRouter } from "./routes/admin/scenario.routes";
 import { AdminRegistrationRouter } from "./routes/admin/registration.routes";
 import { AdminAdmissionRouter } from "./routes/admin/admission.routes";
+import { ComponentController } from "./controllers/admin/component.controller";
+import { ComponentRouter } from "./routes/admin/component.routes";
 
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json());  
 app.use(errorHandler);
 const { PORT = 3000 } = process.env;
 
@@ -46,6 +48,8 @@ app.use("/admin/scenario", AdminScenarioRouter);
 app.use("/admin/registration", AdminRegistrationRouter);
 
 app.use("/admin/admission", AdminAdmissionRouter);
+
+app.use("/admin/component", ComponentRouter)
 
 
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
