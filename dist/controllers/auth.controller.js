@@ -62,7 +62,7 @@ class AuthController {
             user.profesion = profesion;
             user.institute = institute;
             user.phone_number = phone_number;
-            user.role = role;
+            user.role = role !== null && role !== void 0 ? role : 'user';
             const userRepository = data_source_1.AppDataSource.getRepository(User_entity_1.User);
             yield userRepository.save(user);
             res

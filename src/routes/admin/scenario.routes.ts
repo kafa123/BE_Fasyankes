@@ -28,5 +28,4 @@ Router.delete(
   ScenarioController.delete
 )
 
-
 export { Router as AdminScenarioRouter };

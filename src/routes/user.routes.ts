@@ -24,6 +24,6 @@ const Router = express.Router();
 
 // Router.get("/get-All-Scenario/:id", ScenarioUserController.getAll)
 
-// Router.get("/get-Scenario/:id",ScenarioUserController.getOne)
+Router.get("/get-Scenario/:id",ScenarioUserController.getOne)
 
 export { Router as userRouter };

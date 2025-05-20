@@ -10,6 +10,8 @@ import {
 import { PersonalCase } from "./PersonalCase.entity";
 import { Scenario } from "./Scenario.entity";
 import { Patient } from "./Patient.entity";
+import { PatientVisitIGD } from "./PatientVisitIGDData.entity";
+import { DocumentPatient } from "./DocumentPatient.entity";
   
   @Entity({ name: "simulations" })
   export class Simulation {
@@ -61,4 +63,10 @@ import { Patient } from "./Patient.entity";
 
     @OneToOne(() => Patient, (patient) => patient.simulation)
     patient: Patient;
+
+    @OneToOne(() => PatientVisitIGD, (patientVisitIGD) => patientVisitIGD.simulation)
+    patientVisitIGD: PatientVisitIGD;
+
+    @OneToOne(() => DocumentPatient, (documentPatient) => documentPatient.simulation)
+    documentPatient: DocumentPatient;
   }

@@ -19,9 +19,10 @@ class Scenarios1743054574272 {
                 columns: [
                     { name: "id", type: "int", isPrimary: true, isGenerated: true, generationStrategy: "increment" },
                     { name: "simulation_id", type: "int", isNullable: false },
+                    { name: "order", type: "int", isNullable: false },
                     { name: "scenario", type: "varchar", length: "600", isNullable: false },
                     { name: "question", type: "varchar", length: "400", isNullable: false },
-                    { name: "component", type: "enum", enum: ["Pendaftaran", "Data Kunjungan", "Data Rujukan", "Data SEP"], isNullable: false },
+                    { name: "component", type: "enum", enum: ["pendaftaran", "admission-rawat-jalan", "admission-rawat-inap", "admission-gawat-darurat"], isNullable: false },
                     {
                         name: "createdAt",
                         type: "timestamp",
@@ -46,11 +47,9 @@ class Scenarios1743054574272 {
         return __awaiter(this, void 0, void 0, function* () {
             const table = yield queryRunner.getTable("scenarios");
             const foreignKey = table.foreignKeys.find(fk => fk.columnNames.includes("simulation_id"));
-            // Drop foreign key first
             if (foreignKey) {
                 yield queryRunner.dropForeignKey("scenarios", foreignKey);
             }
-            // Then drop the table
             yield queryRunner.dropTable("scenarios");
         });
     }

@@ -8,7 +8,7 @@ export class ScenarioUserController {
     try {
       const repo = AppDataSource.getRepository(Scenario);
 
-      const simulationId = parseInt(req.params.id); // make sure your route param is named simulation_id
+      const simulationId = parseInt(req.params.id); 
       if (isNaN(simulationId)) {
         res.status(400).json({ error: "Invalid simulation ID" });
         return;

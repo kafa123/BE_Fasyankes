@@ -19,6 +19,8 @@ const PatientDetail_entity_1 = require("./PatientDetail.entity");
 const PatientVisitData_entity_1 = require("./PatientVisitData.entity");
 const PatientReferralData_entity_1 = require("./PatientReferralData.entity");
 const SepData_entity_1 = require("./SepData.entity");
+const InpatientRecord_entity_1 = require("./InpatientRecord.entity");
+const ResponsiblePerson_entity_1 = require("./ResponsiblePerson.entity");
 let Patient = class Patient {
 };
 exports.Patient = Patient;
@@ -116,6 +118,14 @@ __decorate([
     (0, typeorm_1.OneToOne)(() => SepData_entity_1.SepData, (sepData) => sepData.patient),
     __metadata("design:type", SepData_entity_1.SepData)
 ], Patient.prototype, "sepData", void 0);
+__decorate([
+    (0, typeorm_1.OneToOne)(() => InpatientRecord_entity_1.InpatientRecord, (record) => record.patient),
+    __metadata("design:type", Array)
+], Patient.prototype, "inpatientRecords", void 0);
+__decorate([
+    (0, typeorm_1.OneToOne)(() => ResponsiblePerson_entity_1.ResponsiblePerson, (rp) => rp.patient),
+    __metadata("design:type", ResponsiblePerson_entity_1.ResponsiblePerson)
+], Patient.prototype, "responsiblePerson", void 0);
 exports.Patient = Patient = __decorate([
     (0, typeorm_1.Entity)({ name: "patients" }),
     (0, typeorm_1.Unique)(["simulation_id"])

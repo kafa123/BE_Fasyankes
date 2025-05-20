@@ -9,9 +9,10 @@ export class Scenarios1743054574272 implements MigrationInterface {
                 columns: [
                     { name: "id", type: "int", isPrimary: true, isGenerated: true, generationStrategy: "increment" },
                     { name: "simulation_id", type: "int", isNullable: false },
+                    { name: "order", type:"int", isNullable:false },
                     { name: "scenario", type: "varchar", length:"600", isNullable: false },
                     { name: "question", type: "varchar", length:"400", isNullable: false },
-                    { name: "component", type: "enum", enum: ["Pendaftaran", "Data Kunjungan", "Data Rujukan", "Data SEP"], isNullable: false },
+                    { name: "component", type: "enum", enum: ["pendaftaran" , "admission-rawat-jalan" , "admission-rawat-inap" , "admission-gawat-darurat"], isNullable: false },
                     {
                         name: "createdAt",
                         type: "timestamp",
@@ -41,12 +42,10 @@ export class Scenarios1743054574272 implements MigrationInterface {
         const table = await queryRunner.getTable("scenarios");
         const foreignKey = table!.foreignKeys.find(fk => fk.columnNames.includes("simulation_id"));
 
-        // Drop foreign key first
         if (foreignKey) {
             await queryRunner.dropForeignKey("scenarios", foreignKey);
         }
 
-        // Then drop the table
         await queryRunner.dropTable("scenarios");
     }
 

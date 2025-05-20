@@ -17,18 +17,25 @@ class ScenarioController {
     static create(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { simulation_id, scenario, question, component, answer_text, answer_image } = req.body;
-                if (!scenario || !question || !component) {
-                    res.status(400).json({ error: scenario + component + question });
+                const { simulation_id, scenario, question, component, answer_text, order } = req.body;
+                if (!scenario || !question || !component || !order) {
+                    res.status(400).json({ error: "Required fields are missing" });
                     return;
                 }
                 const scenarioRepo = data_source_1.AppDataSource.getRepository(Scenario_entity_1.Scenario);
                 const answerRepo = data_source_1.AppDataSource.getRepository(Answer_entity_1.Answer);
+                yield scenarioRepo
+                    .createQueryBuilder()
+                    .update(Scenario_entity_1.Scenario)
+                    .set({ order: () => `"order" + 1` })
+                    .where("simulation_id = :simulation_id AND \"order\" >= :order", { simulation_id, order })
+                    .execute();
                 const newScenario = scenarioRepo.create({
                     simulation_id,
                     scenario,
                     question,
                     component,
+                    order
                 });
                 const savedScenario = yield scenarioRepo.save(newScenario);
                 const answerImagePath = req.file ? `/uploads/${req.file.filename}` : null;
@@ -46,7 +53,7 @@ class ScenarioController {
             }
             catch (error) {
                 console.error(error);
-                res.status(500).json({ error: "Internal Server Error" });
+                res.status(500).json({ error: "Internal Server Error", message: error });
             }
         });
     }

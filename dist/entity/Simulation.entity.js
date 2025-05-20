@@ -14,6 +14,8 @@ const typeorm_1 = require("typeorm");
 const PersonalCase_entity_1 = require("./PersonalCase.entity");
 const Scenario_entity_1 = require("./Scenario.entity");
 const Patient_entity_1 = require("./Patient.entity");
+const PatientVisitIGDData_entity_1 = require("./PatientVisitIGDData.entity");
+const DocumentPatient_entity_1 = require("./DocumentPatient.entity");
 let Simulation = class Simulation {
 };
 exports.Simulation = Simulation;
@@ -79,6 +81,14 @@ __decorate([
     (0, typeorm_1.OneToOne)(() => Patient_entity_1.Patient, (patient) => patient.simulation),
     __metadata("design:type", Patient_entity_1.Patient)
 ], Simulation.prototype, "patient", void 0);
+__decorate([
+    (0, typeorm_1.OneToOne)(() => PatientVisitIGDData_entity_1.PatientVisitIGD, (patientVisitIGD) => patientVisitIGD.simulation),
+    __metadata("design:type", PatientVisitIGDData_entity_1.PatientVisitIGD)
+], Simulation.prototype, "patientVisitIGD", void 0);
+__decorate([
+    (0, typeorm_1.OneToOne)(() => DocumentPatient_entity_1.DocumentPatient, (documentPatient) => documentPatient.simulation),
+    __metadata("design:type", DocumentPatient_entity_1.DocumentPatient)
+], Simulation.prototype, "documentPatient", void 0);
 exports.Simulation = Simulation = __decorate([
     (0, typeorm_1.Entity)({ name: "simulations" })
 ], Simulation);

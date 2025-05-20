@@ -5,157 +5,78 @@ import { PatientDetail } from "../../entity/PatientDetail.entity";
 import { ValueBelief } from "../../entity/ValueBelief.entity";
 import { PrivacyRequest } from "../../entity/PrivacyRequest.entity";
 import { HealthInformationPatient } from "../../entity/HealthInformationPatient.entity";
+import { ComponentService, CreatePatientInput } from "../../services/ComponentService";
 
 export class RegistrationController {
 
   static async create(req: Request, res: Response): Promise<void> {
     try {
-      const {
-        nik,
-        name,
-        gender,
-        date_of_birth,
-        place_of_birth,
-        phone_number,
-        address,
-        province,
-        city,
-        district,
-        value_belief,
-        privacy_request,
-        type_of_insurance,
-        educational_level,
-        blood_type,
-        religion,
-        marriage_status,
-        profession,
-        ethnic,
-        language,
-        disability,
-        insurance_number,
-        simulation_id,
-        family_name_1,
-        family_relationship_1,
-        phone_number_family_1,
-        family_name_2,
-        family_relationship_2,
-        phone_number_family_2,
-        family_name_3,
-        family_relationship_3,
-        phone_number_family_3,
-      } = req.body;
 
-      const patientRepo = AppDataSource.getRepository(Patient);
-      const patientDetailRepo = AppDataSource.getRepository(PatientDetail);
-      const valueBeliefRepo = AppDataSource.getRepository(ValueBelief);
-      const privacyRequestRepo = AppDataSource.getRepository(PrivacyRequest);
-      const healthInformationPatientsRepo = AppDataSource.getRepository(HealthInformationPatient);
+      const{type} = req.body;
+    const patientData: CreatePatientInput = req.body;
 
-      const existing = await patientRepo.findOneBy({ simulation_id });
-      if (existing) {
-        res.status(400).json({ message: "Simulation already has a patient." });
-      }
-
-      const newPatient = patientRepo.create({
-        simulation_id,
-        nik,
-        name,
-        gender,
-        date_of_birth,
-        place_of_birth,
-        phone_number,
-        address,
-        province,
-        city,
-        district,
-      });
-
-      const savedPatient = await patientRepo.save(newPatient);
-
-      const newPatientDetail = patientDetailRepo.create({
-        patient_id: savedPatient.id,
-        type_of_insurance,
-        educational_level,
-        blood_type,
-        religion,
-        marriage_status,
-        profession,
-        ethnic,
-        language,
-        disability,
-        insurance_number,
-      });
-
-      await patientDetailRepo.save(newPatientDetail);
-
-      let newValueBelief = null;
-      if (value_belief != null && value_belief !== "") {
-        newValueBelief = valueBeliefRepo.create({
-          patient_id: savedPatient.id,
-          value_belief
-        });
-        await valueBeliefRepo.save(newValueBelief);
-      }
-
-      let newPrivacyRequest = null;
-      if (privacy_request != null && privacy_request !== "") {
-        newPrivacyRequest = privacyRequestRepo.create({
-          patient_id: savedPatient.id,
-          privacy_request
-        });
-        await privacyRequestRepo.save(newPrivacyRequest);
-      }
-
-      let newKeluarga1Request = null;
-      let newKeluarga2Request = null;
-      let newKeluarga3Request = null;
-
-      if(family_name_1 != null && family_name_1 !==""){
-        newKeluarga1Request = healthInformationPatientsRepo.create({
-          name:family_name_1,
-          patient_id: savedPatient.id,
-          family_relationship:family_relationship_1,
-          phone_number:phone_number_family_1
-        });
-        await healthInformationPatientsRepo.save(newKeluarga1Request);
-      }
-      if(family_name_2 != null && family_name_2 !==""){
-        newKeluarga2Request = healthInformationPatientsRepo.create({
-          name:family_name_2,
-          patient_id: savedPatient.id,
-          family_relationship:family_relationship_2,
-          phone_number:phone_number_family_2
-        });
-        await healthInformationPatientsRepo.save(newKeluarga2Request);
-      }
-      if(family_name_3 != null && family_name_3 !==""){
-        newKeluarga3Request = healthInformationPatientsRepo.create({
-          name:family_name_3,
-          patient_id: savedPatient.id,
-          family_relationship:family_relationship_3,
-          phone_number:phone_number_family_3
-        });
-        await healthInformationPatientsRepo.save(newKeluarga3Request);
-      }
-
-      res.status(201).json({
-        message: "Patient successfully created",
-        patient: savedPatient,
-        patient_detail: newPatientDetail,
-        value_belief: newValueBelief,
-        privacy_request: newPrivacyRequest,
-        health_information_family_1: newKeluarga1Request,
-        health_information_family_2: newKeluarga2Request,
-        health_information_family_3: newKeluarga3Request,
-      });
-
+    // Now call service with typed data
+    const savedPatient = await ComponentService.createPatient(patientData);
+  
+      // const patientRepo = AppDataSource.getRepository(Patient);
+      // const patientDetailRepo = AppDataSource.getRepository(PatientDetail);
+      // const valueBeliefRepo = AppDataSource.getRepository(ValueBelief);
+      // const privacyRequestRepo = AppDataSource.getRepository(PrivacyRequest);
+      // const healthInfoRepo = AppDataSource.getRepository(HealthInformationPatient);
+  
+      // const existing = await patientRepo.findOneBy({ simulation_id: patient.simulation_id });
+      // if (existing) {
+      //   res.status(400).json({ message: "Simulation already has a patient." });
+      //   return;
+      // }
+  
+      // const newPatient = patientRepo.create(patient);
+      // const savedPatient = await patientRepo.save(newPatient);
+      // const existingPatient = await patientRepo.findOneBy({ simulation_id: patient.simulation_id });
+  
+      // if (patient_detail) {
+      //   const newPatientDetail = patientDetailRepo.create({
+      //     ...patient_detail,
+      //     patient_id: existingPatient.id,
+      //   });
+      //   await patientDetailRepo.save(newPatientDetail);
+      // }
+  
+      // if (value_belief?.value_belief) {
+      //   const newVB = valueBeliefRepo.create({
+      //     patient_id: existingPatient.id,
+      //     value_belief: value_belief.value_belief,
+      //   });
+      //   await valueBeliefRepo.save(newVB);
+      // }
+  
+      // if (privacy_request?.privacy_request) {
+      //   const newPR = privacyRequestRepo.create({
+      //     patient_id: existingPatient.id,
+      //     privacy_request: privacy_request.privacy_request,
+      //   });
+      //   await privacyRequestRepo.save(newPR);
+      // }
+  
+      // if (Array.isArray(family_members)) {
+      //   for (const fm of family_members) {
+      //     if (fm.name) {
+      //       const newFM = healthInfoRepo.create({
+      //         patient_id: existingPatient.id, 
+      //         name: fm.name,
+      //         family_relationship: fm.family_relationship,
+      //         phone_number: fm.phone_number,
+      //       });
+      //       await healthInfoRepo.save(newFM);
+      //     }
+      //   }
+      // }
+  
+      res.status(201).json({ message: "Patient successfully created" });
     } catch (error) {
       console.error("Error creating patient:", error);
-      res.status(500).json({ message: error });
-    }
-
-  }
-
+  
+    }}
 
   static async getOne(req: Request, res: Response): Promise<void> {
     try {
@@ -163,6 +84,7 @@ export class RegistrationController {
       const patientDetailRepo = AppDataSource.getRepository(PatientDetail);
       const valueBeliefRepo = AppDataSource.getRepository(ValueBelief);
       const privacyRequestRepo = AppDataSource.getRepository(PrivacyRequest);
+      const healthInfoRepo = AppDataSource.getRepository(HealthInformationPatient)
       const patient = await patientRepo.findOneBy({ simulation_id: parseInt(req.params.id) });
       if (!patient) {
         res.status(404).json({ error: "patient not found" });
@@ -171,12 +93,14 @@ export class RegistrationController {
       const patient_detail = await patientDetailRepo.findOneBy({ patient_id: patient.id })
       const value_belief = await valueBeliefRepo.findOneBy({ patient_id: patient.id })
       const privacy_request = await privacyRequestRepo.findOneBy({ patient_id: patient.id })
+      const health_information_patients = await healthInfoRepo.findBy({patient_id: patient.id})
 
       res.status(200).json({
         data: patient,
         patient_detail: patient_detail ?? null,
         value_belief: value_belief ?? null,
-        privacy_request: privacy_request ?? null
+        privacy_request: privacy_request ?? null,
+        healthInfo: health_information_patients ?? null,
       });
     } catch (e) {
       res.status(500).json({ message: "Internal Server Error", Error: e });
