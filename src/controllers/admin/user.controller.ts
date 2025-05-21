@@ -15,11 +15,11 @@ export class AdminUserController {
         });
         return;
       } else {
-        console.log("serving from db");
         const userCountRepository = AppDataSource.getRepository(UserCount);
         const loginCounts = await userCountRepository
           .createQueryBuilder("user_count")
           .select("TO_CHAR(user_count.login_date, 'YYYY-MM-DD')", "date")
+          .addSelect("TO_CHAR(user_count.login_date, 'FMDay')", "day_name")
           .addSelect("COUNT(user_count.id)", "total_login_users")
           .where("user_count.login_date >= CURRENT_DATE - INTERVAL '10 days'")
           .groupBy("user_count.login_date")

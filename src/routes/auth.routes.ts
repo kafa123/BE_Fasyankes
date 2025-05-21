@@ -16,6 +16,8 @@ Router.put("/profile/update", upload.none(), authentification, authorization(["a
 
 Router.post("/profile/update-password", upload.none(), authentification, authorization(["admin", "user"]), AuthController.postNewPassword);
 
-Router.post('/requestPasswordReset', upload.none(), );
+Router.post('/requestPasswordReset', upload.none(), AuthController.requestPasswordReset);
+
+Router.post('/resetpassword/:id/:token', upload.none(), AuthController.resetPassword);
 
 export { Router as authRouter };

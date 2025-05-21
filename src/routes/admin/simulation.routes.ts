@@ -12,6 +12,11 @@ Router.get(
   AdminSimulationController.get
 )
 
+Router.get("/get-simulation/:id", 
+    authentification,
+    authorization(["admin"]),
+    AdminSimulationController.getOne);
+
 Router.post(
   "/post-simulation",
   authentification,

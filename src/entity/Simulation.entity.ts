@@ -46,6 +46,9 @@ import { DocumentPatient } from "./DocumentPatient.entity";
     @Column({ nullable: false })
     payment_method: string;
 
+    @Column({ nullable: true })
+    symptoms: string;
+
     @Column({ nullable: false })
     case_description: string;
 

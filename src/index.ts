@@ -18,6 +18,8 @@ import { AdminRegistrationRouter } from "./routes/admin/registration.routes";
 import { AdminAdmissionRouter } from "./routes/admin/admission.routes";
 import { ComponentController } from "./controllers/admin/component.controller";
 import { ComponentRouter } from "./routes/admin/component.routes";
+import { UserResultRoutes } from "./routes/user/result.routes";
+import { PublicRouter } from "./routes/public.routes";
 
 
 dotenv.config();
@@ -39,6 +41,8 @@ app.use("/tppgd/", UserTPPGDRouter);
 
 app.use("/tppri/", UserTPPRIRouter);
 
+app.use("/", UserResultRoutes);
+
 // Admin
 
 app.use("/admin/simulation", AdminSimulationRouter);
@@ -50,6 +54,8 @@ app.use("/admin/registration", AdminRegistrationRouter);
 app.use("/admin/admission", AdminAdmissionRouter);
 
 app.use("/admin/component", ComponentRouter)
+
+app.use("/", PublicRouter);
 
 
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));

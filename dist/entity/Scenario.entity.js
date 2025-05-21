@@ -13,6 +13,7 @@ exports.Scenario = void 0;
 const typeorm_1 = require("typeorm");
 const Simulation_entity_1 = require("./Simulation.entity");
 const Answer_entity_1 = require("./Answer.entity");
+const UserScenario_entity_1 = require("./UserScenario.entity");
 let Scenario = class Scenario {
 };
 exports.Scenario = Scenario;
@@ -62,6 +63,10 @@ __decorate([
     (0, typeorm_1.OneToOne)(() => Answer_entity_1.Answer, (answer) => answer.scenario),
     __metadata("design:type", Answer_entity_1.Answer)
 ], Scenario.prototype, "answer", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => UserScenario_entity_1.UserScenario, (userScenario) => userScenario.scenario),
+    __metadata("design:type", Array)
+], Scenario.prototype, "userScenario", void 0);
 exports.Scenario = Scenario = __decorate([
     (0, typeorm_1.Entity)({ name: "scenarios" })
 ], Scenario);

@@ -58,6 +58,10 @@ __decorate([
     __metadata("design:type", String)
 ], Simulation.prototype, "payment_method", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Simulation.prototype, "symptoms", void 0);
+__decorate([
     (0, typeorm_1.Column)({ nullable: false }),
     __metadata("design:type", String)
 ], Simulation.prototype, "case_description", void 0);

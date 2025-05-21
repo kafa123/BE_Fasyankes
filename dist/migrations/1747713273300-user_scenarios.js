@@ -9,13 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Simulations1743006201765 = void 0;
+exports.UserScenarios1747713273300 = void 0;
 const typeorm_1 = require("typeorm");
-class Simulations1743006201765 {
+class UserScenarios1747713273300 {
     up(queryRunner) {
         return __awaiter(this, void 0, void 0, function* () {
             yield queryRunner.createTable(new typeorm_1.Table({
-                name: "simulations",
+                name: "user_scenarios",
                 columns: [
                     {
                         name: "id",
@@ -25,49 +25,20 @@ class Simulations1743006201765 {
                         generationStrategy: "increment",
                     },
                     {
-                        name: "patient_type",
-                        type: "enum",
-                        enum: ["pasien_lama", "pasien_baru"],
+                        name: "user_id",
+                        type: "int",
                         isNullable: false,
                     },
                     {
-                        name: "category",
-                        type: "enum",
-                        enum: ["rawat_jalan", "rawat_inap", "gawat_darurat"],
+                        name: "scenario_id",
+                        type: "int",
                         isNullable: false,
                     },
                     {
-                        name: "perujuk",
-                        type: "varchar",
-                        length: "100",
-                        isNullable: true,
-                    },
-                    {
-                        name: "diagnose",
-                        type: "varchar",
-                        length: "100",
-                        isNullable: false,
-                    },
-                    {
-                        name: "case_type",
-                        type: "varchar",
-                        length: "100",
-                        isNullable: false,
-                    },
-                    {
-                        name: "payment_method",
-                        type: "varchar",
-                        length: "50",
-                        isNullable: false,
-                    },
-                    {
-                        name: "symptoms",
-                        type: "text",
-                        isNullable: true,
-                    },
-                    {
-                        name: "case_description",
-                        type: "text",
+                        name: "score_similarity",
+                        type: 'decimal',
+                        precision: 5,
+                        scale: 2,
                         isNullable: false,
                     },
                     {
@@ -81,14 +52,27 @@ class Simulations1743006201765 {
                         default: "now()",
                     },
                 ],
+                foreignKeys: [
+                    {
+                        columnNames: ["user_id"],
+                        referencedColumnNames: ["id"],
+                        referencedTableName: "users",
+                        onDelete: "CASCADE",
+                    },
+                    {
+                        columnNames: ["scenario_id"],
+                        referencedColumnNames: ["id"],
+                        referencedTableName: "scenarios",
+                        onDelete: "CASCADE",
+                    },
+                ],
             }));
         });
     }
     down(queryRunner) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield queryRunner.dropTable("simulations");
         });
     }
 }
-exports.Simulations1743006201765 = Simulations1743006201765;
-//# sourceMappingURL=1743038130428-simulations.js.map
+exports.UserScenarios1747713273300 = UserScenarios1747713273300;
+//# sourceMappingURL=1747713273300-user_scenarios.js.map

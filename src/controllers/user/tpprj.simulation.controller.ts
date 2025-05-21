@@ -10,8 +10,15 @@ export class UserTPPRJSimulationController{
 
       const userId = req["currentUser"]?.id;
 
+      const simulationsRepo = AppDataSource.getRepository(Simulation);
+
       if (!userId) {
-        res.status(400).json({ error: "User ID is required" });
+        const simulations = await simulationsRepo.find({
+          where: {
+              category: "rawat_jalan" 
+          }
+        });
+        res.status(200).json({ data: simulations });
         return;
       }
 
