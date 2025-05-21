@@ -207,13 +207,57 @@ class ComponentService {
                 const referral = yield data_source_1.AppDataSource.getRepository(PatientReferralData_entity_1.PatientReferralData).findOneBy({ patient_id: patient.id });
                 const sep = yield data_source_1.AppDataSource.getRepository(SepData_entity_1.SepData).findOneBy({ patient_id: patient.id });
                 const document = yield data_source_1.AppDataSource.getRepository(DocumentPatient_entity_1.DocumentPatient).findOneBy({ simulation_id });
+                const data_kunjungan = Object.assign(Object.assign({}, visit), { cara_pembayaran: SimulationData.payment_method, nomer_asuransi: patient_detail.insurance_number });
                 return {
-                    data_kunjungan: visit,
-                    cara_pembayaran: SimulationData.payment_method,
-                    nomer_asuransi: patient_detail.insurance_number,
+                    data_kunjungan,
                     data_rujukan: referral,
                     data_sep: sep,
                     dokumen: document,
+                };
+            }
+            catch (error) {
+                throw new Error(`Failed to get admission data: ${error.message}`);
+            }
+        });
+    }
+    static getAdmissionInpatient(simulation_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b;
+            try {
+                const simulation_data = yield data_source_1.AppDataSource.getRepository(Simulation_entity_1.Simulation).findOneOrFail({ where: { id: simulation_id } });
+                const patient = yield data_source_1.AppDataSource.getRepository(Patient_entity_1.Patient).findOneByOrFail({ simulation_id: simulation_id });
+                const patient_detail = yield data_source_1.AppDataSource.getRepository(PatientDetail_entity_1.PatientDetail).findOneByOrFail({ patient_id: patient.id });
+                const inpatientRecord = yield data_source_1.AppDataSource.getRepository(InpatientRecord_entity_1.InpatientRecord).findOneByOrFail({ patient_id: patient.id });
+                const responsiblePerson = yield data_source_1.AppDataSource.getRepository(ResponsiblePerson_entity_1.ResponsiblePerson).findOneByOrFail({ patient_id: patient.id });
+                const health_information_patients = yield data_source_1.AppDataSource.getRepository(HealthInformationPatient_entity_1.HealthInformationPatient).findBy({ patient_id: patient.id });
+                const value_belief = yield data_source_1.AppDataSource.getRepository(ValueBelief_entity_1.ValueBelief).findOneByOrFail({ patient_id: patient.id });
+                const privacy_request = yield data_source_1.AppDataSource.getRepository(PrivacyRequest_entity_1.PrivacyRequest).findOneBy({ patient_id: patient.id });
+                const documentData = yield data_source_1.AppDataSource.getRepository(DocumentPatient_entity_1.DocumentPatient).findOneByOrFail({ simulation_id: simulation_id });
+                const data_rawat_inap = Object.assign(Object.assign({}, inpatientRecord !== null && inpatientRecord !== void 0 ? inpatientRecord : null), { cara_pembayaran: (_a = simulation_data.payment_method) !== null && _a !== void 0 ? _a : null, nomer_asuransi: (_b = patient_detail.insurance_number) !== null && _b !== void 0 ? _b : null });
+                return {
+                    data_rawat_inap: data_rawat_inap !== null && data_rawat_inap !== void 0 ? data_rawat_inap : null,
+                    penanggung_jawab: responsiblePerson !== null && responsiblePerson !== void 0 ? responsiblePerson : null,
+                    penerima_informasi_kesehatan: health_information_patients !== null && health_information_patients !== void 0 ? health_information_patients : null,
+                    nilai_dan_keyakinan: value_belief !== null && value_belief !== void 0 ? value_belief : null,
+                    permintaan_privasi: privacy_request !== null && privacy_request !== void 0 ? privacy_request : null,
+                    document: documentData !== null && documentData !== void 0 ? documentData : null
+                };
+            }
+            catch (error) {
+                throw new Error(`Failed to get admission data: ${error.message}`);
+            }
+        });
+    }
+    static getAdmissionIGD(simulation_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const simulation_data = yield data_source_1.AppDataSource.getRepository(Simulation_entity_1.Simulation).findOneByOrFail({ id: simulation_id });
+                const patientVisitIGD = yield data_source_1.AppDataSource.getRepository(PatientVisitIGDData_entity_1.PatientVisitIGD).findOneByOrFail({ simulation_id: simulation_id });
+                const documentData = yield data_source_1.AppDataSource.getRepository(DocumentPatient_entity_1.DocumentPatient).findOneByOrFail({ simulation_id: simulation_id });
+                const data_kunjungan = Object.assign(Object.assign({}, patientVisitIGD !== null && patientVisitIGD !== void 0 ? patientVisitIGD : null), { cara_pembayaran: simulation_data.payment_method });
+                return {
+                    data_kunjungan,
+                    document: documentData !== null && documentData !== void 0 ? documentData : null
                 };
             }
             catch (error) {

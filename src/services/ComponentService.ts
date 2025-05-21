@@ -283,28 +283,85 @@ export class ComponentService {
     };
   }
 
-static async getAdmissionOutPatient(simulation_id: number) {
-  try {
-    const SimulationData = await AppDataSource.getRepository(Simulation).findOneOrFail({where:{id:simulation_id}});
+  static async getAdmissionOutPatient(simulation_id: number) {
+    try {
+      const SimulationData = await AppDataSource.getRepository(Simulation).findOneOrFail({ where: { id: simulation_id } });
 
-    const patient = await AppDataSource.getRepository(Patient).findOneByOrFail({ simulation_id });
-    const patient_detail = await AppDataSource.getRepository(PatientDetail).findOneByOrFail({patient_id: patient.id});
-    const visit = await AppDataSource.getRepository(PatientVisitData).findOneBy({ patient_id: patient.id });
-    const referral = await AppDataSource.getRepository(PatientReferralData).findOneBy({ patient_id: patient.id });
-    const sep = await AppDataSource.getRepository(SepData).findOneBy({ patient_id: patient.id });
-    const document = await AppDataSource.getRepository(DocumentPatient).findOneBy({ simulation_id });
+      const patient = await AppDataSource.getRepository(Patient).findOneByOrFail({ simulation_id });
+      const patient_detail = await AppDataSource.getRepository(PatientDetail).findOneByOrFail({ patient_id: patient.id });
+      const visit = await AppDataSource.getRepository(PatientVisitData).findOneBy({ patient_id: patient.id });
+      const referral = await AppDataSource.getRepository(PatientReferralData).findOneBy({ patient_id: patient.id });
+      const sep = await AppDataSource.getRepository(SepData).findOneBy({ patient_id: patient.id });
+      const document = await AppDataSource.getRepository(DocumentPatient).findOneBy({ simulation_id });
 
-    return {
-      data_kunjungan: visit,
-      cara_pembayaran: SimulationData.payment_method,
-      nomer_asuransi: patient_detail.insurance_number,
-      data_rujukan: referral,
-      data_sep: sep,
-      dokumen: document,
-    };
-  } catch (error) {
-    throw new Error(`Failed to get admission data: ${error.message}`);
+      const data_kunjungan = {
+        ...visit,
+        cara_pembayaran: SimulationData.payment_method,
+        nomer_asuransi: patient_detail.insurance_number,
+      };
+
+      return {
+        data_kunjungan,
+        data_rujukan: referral,
+        data_sep: sep,
+        dokumen: document,
+      };
+    } catch (error) {
+      throw new Error(`Failed to get admission data: ${error.message}`);
+    }
   }
-}
 
+  static async getAdmissionInpatient(simulation_id: number) {
+    try {
+      const simulation_data = await AppDataSource.getRepository(Simulation).findOneOrFail({ where: { id: simulation_id } });
+      const patient = await AppDataSource.getRepository(Patient).findOneByOrFail({ simulation_id: simulation_id });
+      const patient_detail = await AppDataSource.getRepository(PatientDetail).findOneByOrFail({ patient_id: patient.id });
+
+      const inpatientRecord = await AppDataSource.getRepository(InpatientRecord).findOneByOrFail({ patient_id: patient.id });
+      const responsiblePerson = await AppDataSource.getRepository(ResponsiblePerson).findOneByOrFail({ patient_id: patient.id });
+      const health_information_patients = await AppDataSource.getRepository(HealthInformationPatient).findBy({ patient_id: patient.id });
+      const value_belief = await AppDataSource.getRepository(ValueBelief).findOneByOrFail({ patient_id: patient.id });
+      const privacy_request = await AppDataSource.getRepository(PrivacyRequest).findOneBy({ patient_id: patient.id });
+      const documentData = await AppDataSource.getRepository(DocumentPatient).findOneByOrFail({ simulation_id: simulation_id });
+
+      const data_rawat_inap = {
+        ...inpatientRecord ?? null,
+        cara_pembayaran: simulation_data.payment_method ?? null,
+        nomer_asuransi: patient_detail.insurance_number ?? null,
+      };
+
+
+      return {
+        data_rawat_inap: data_rawat_inap ?? null,
+        penanggung_jawab: responsiblePerson ?? null,
+        penerima_informasi_kesehatan: health_information_patients ?? null,
+        nilai_dan_keyakinan: value_belief ?? null,
+        permintaan_privasi: privacy_request ?? null,
+        document: documentData ?? null
+      };
+    } catch (error) {
+      throw new Error(`Failed to get admission data: ${error.message}`);
+    }
+  }
+
+  static async getAdmissionIGD(simulation_id: number) {
+    try {
+      const simulation_data = await AppDataSource.getRepository(Simulation).findOneByOrFail({ id: simulation_id });
+
+      const patientVisitIGD = await AppDataSource.getRepository(PatientVisitIGD).findOneByOrFail({ simulation_id: simulation_id });
+      const documentData = await AppDataSource.getRepository(DocumentPatient).findOneByOrFail({ simulation_id: simulation_id });
+
+      const data_kunjungan = {
+        ...patientVisitIGD ?? null,
+        cara_pembayaran: simulation_data.payment_method
+      }
+
+      return {
+        data_kunjungan,
+        document: documentData ?? null
+      };
+    } catch (error) {
+      throw new Error(`Failed to get admission data: ${error.message}`);
+    }
+  }
 }
