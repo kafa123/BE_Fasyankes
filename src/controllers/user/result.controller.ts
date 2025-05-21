@@ -137,14 +137,13 @@ export class UserResultController {
         });
         await userScenarioRepo.save(userScenarioNew);
       } else {
-        // Cari data terbaru berdasarkan created_at atau updated_at
         const latestRecord = await userScenarioRepo.findOne({
           where: {
             user_id: userId,
             scenario_id: Number(scenarioId),
           },
           order: {
-            createdAt: "DESC" // atau updated_at tergantung kolom timestamp yang kamu punya
+            createdAt: "DESC"
           }
         });
 
@@ -152,7 +151,6 @@ export class UserResultController {
           latestRecord.score_similarity = totalScore;
           await userScenarioRepo.save(latestRecord);
         } else {
-          // Kalau gak ada data sama sekali, kamu bisa insert baru juga jika perlu
           const userScenarioNew = userScenarioRepo.create({
             user_id: userId,
             scenario_id: Number(scenarioId),
@@ -166,6 +164,57 @@ export class UserResultController {
           message: "Success",
           totalScore: totalScore,
       } });
+
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+
+    static async getSimulationResult(req: Request, res: Response): Promise<void> {
+    try {
+
+      const scenarioRepo = AppDataSource.getRepository(Scenario);
+      const personalCaseRepo = AppDataSource.getRepository(PersonalCase);
+      const userScenarioRepo = AppDataSource.getRepository(UserScenario);
+
+      const userId = req["currentUser"]?.id;
+
+      const result = await personalCaseRepo
+        .createQueryBuilder("pc")
+        .innerJoin("pc.simulation", "sm")
+        .innerJoin("scenarios", "s", "s.simulation_id = pc.simulation_id")
+        .innerJoin(
+          qb => qb
+            .select("us.user_id", "user_id")
+            .addSelect("us.scenario_id", "scenario_id")
+            .addSelect("AVG(us.score_similarity)", "avg_score")
+            .from(UserScenario, "us")
+            .where("us.user_id = :userId", { userId })
+            .groupBy("us.user_id, us.scenario_id"),
+          "aps",
+          "aps.scenario_id = s.id AND aps.user_id = pc.user_id"
+        )
+        .where("pc.user_id = :userId", { userId })
+        .select("pc.simulation_id", "simulation_id")
+        .addSelect("sm.case_description", "case_description")
+        .addSelect("AVG(aps.avg_score)", "average_score")
+        .groupBy("pc.simulation_id, sm.case_description")
+        .orderBy("pc.simulation_id")
+        .getRawMany();
+
+        if (result.length === 0) {
+          res.status(404).json({ error: "No results found" });
+          return;
+        };
+
+        res.status(200).json({ data: {
+          result: result.map((item) => ({
+            simulation_id: item.simulation_id,
+            case_description: item.case_description,
+            average_score: Number(item.average_score).toFixed(2),
+          })),
+        } });
 
     } catch (error) {
       console.error(error);
