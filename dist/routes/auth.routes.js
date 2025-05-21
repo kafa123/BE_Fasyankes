@@ -13,4 +13,5 @@ Router.post("/login", upload_1.default.none(), auth_controller_1.AuthController.
 Router.get("/profile", authentification_1.authentification, (0, authorization_1.authorization)(["admin", "user"]), auth_controller_1.AuthController.getProfile);
 Router.put("/profile/update", upload_1.default.none(), authentification_1.authentification, (0, authorization_1.authorization)(["admin", "user"]), auth_controller_1.AuthController.updateProfile);
 Router.post("/profile/update-password", upload_1.default.none(), authentification_1.authentification, (0, authorization_1.authorization)(["admin", "user"]), auth_controller_1.AuthController.postNewPassword);
+Router.post('/requestPasswordReset', upload_1.default.none());
 //# sourceMappingURL=auth.routes.js.map
