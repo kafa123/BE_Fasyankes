@@ -196,10 +196,12 @@ export class UserResultController {
           "aps.scenario_id = s.id AND aps.user_id = pc.user_id"
         )
         .where("pc.user_id = :userId", { userId })
+        .andWhere("pc.checklist = true")
         .select("pc.simulation_id", "simulation_id")
         .addSelect("sm.case_description", "case_description")
+        .addSelect("pc.duration", "duration")
         .addSelect("AVG(aps.avg_score)", "average_score")
-        .groupBy("pc.simulation_id, sm.case_description")
+        .groupBy("pc.simulation_id, sm.case_description, pc.duration")
         .orderBy("pc.simulation_id")
         .getRawMany();
 
@@ -211,6 +213,7 @@ export class UserResultController {
         res.status(200).json({ data: {
           result: result.map((item) => ({
             simulation_id: item.simulation_id,
+            duration: item.duration,
             case_description: item.case_description,
             average_score: Number(item.average_score).toFixed(2),
           })),
