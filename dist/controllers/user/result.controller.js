@@ -164,9 +164,7 @@ class UserResultController {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
             try {
-                const scenarioRepo = data_source_1.AppDataSource.getRepository(Scenario_entity_1.Scenario);
                 const personalCaseRepo = data_source_1.AppDataSource.getRepository(PersonalCase_entity_1.PersonalCase);
-                const userScenarioRepo = data_source_1.AppDataSource.getRepository(UserScenario_entity_1.UserScenario);
                 const userId = (_a = req["currentUser"]) === null || _a === void 0 ? void 0 : _a.id;
                 const result = yield personalCaseRepo
                     .createQueryBuilder("pc")
@@ -180,7 +178,7 @@ class UserResultController {
                     .where("us.user_id = :userId", { userId })
                     .groupBy("us.user_id, us.scenario_id"), "aps", "aps.scenario_id = s.id AND aps.user_id = pc.user_id")
                     .where("pc.user_id = :userId", { userId })
-                    .andWhere("pc.checklist = true")
+                    // .andWhere("pc.checklist = true")
                     .select("pc.simulation_id", "simulation_id")
                     .addSelect("sm.case_description", "case_description")
                     .addSelect("pc.duration", "duration")
@@ -193,14 +191,58 @@ class UserResultController {
                     return;
                 }
                 ;
-                res.status(200).json({ data: {
-                        result: result.map((item) => ({
-                            simulation_id: item.simulation_id,
-                            duration: item.duration,
-                            case_description: item.case_description,
-                            average_score: Number(item.average_score).toFixed(2),
-                        })),
-                    } });
+                res.status(200).json({
+                    data: result.map((item) => ({
+                        simulation_id: item.simulation_id,
+                        duration: item.duration,
+                        case_description: item.case_description,
+                        average_score: Number(item.average_score).toFixed(2),
+                    })),
+                });
+            }
+            catch (error) {
+                console.error(error);
+                res.status(500).json({ error: "Internal Server Error" });
+            }
+        });
+    }
+    static getSimulationResultById(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            try {
+                const personalCaseRepo = data_source_1.AppDataSource.getRepository(PersonalCase_entity_1.PersonalCase);
+                const userId = (_a = req["currentUser"]) === null || _a === void 0 ? void 0 : _a.id;
+                const simulationId = req.params.simulationId;
+                const result = yield personalCaseRepo
+                    .createQueryBuilder("pc")
+                    .innerJoin("pc.simulation", "sm")
+                    .innerJoin("scenarios", "s", "s.simulation_id = pc.simulation_id")
+                    .innerJoin(qb => qb
+                    .select("us.user_id", "user_id")
+                    .addSelect("us.scenario_id", "scenario_id")
+                    .addSelect("AVG(us.score_similarity)", "avg_score")
+                    .from(UserScenario_entity_1.UserScenario, "us")
+                    .where("us.user_id = :userId", { userId })
+                    .groupBy("us.user_id, us.scenario_id"), "aps", "aps.scenario_id = s.id AND aps.user_id = pc.user_id")
+                    .where("pc.user_id = :userId", { userId })
+                    .andWhere("pc.simulation_id = :simulationId", { simulationId })
+                    // .andWhere("pc.checklist = true") // optional filter
+                    .select("pc.simulation_id", "simulation_id")
+                    .addSelect("sm.case_description", "case_description")
+                    .addSelect("pc.duration", "duration")
+                    .addSelect("AVG(aps.avg_score)", "average_score")
+                    .groupBy("pc.simulation_id, sm.case_description, pc.duration")
+                    .getRawOne(); // hanya ambil satu
+                if (!result) {
+                    res.status(404).json({ error: "No result found" });
+                    return;
+                }
+                res.status(200).json({
+                    simulation_id: result.simulation_id,
+                    duration: result.duration,
+                    case_description: result.case_description,
+                    average_score: Number(result.average_score).toFixed(2),
+                });
             }
             catch (error) {
                 console.error(error);

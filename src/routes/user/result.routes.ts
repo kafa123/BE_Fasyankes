@@ -28,4 +28,12 @@ Router.get(
     authorization(["user"]),
     UserResultController.getSimulationResult);
 
+Router.get(
+    "/get-result-simulation-by-id/:simulationId", 
+    upload.none(),
+    authentification,
+    authorization(["user"]),
+    UserResultController.getSimulationResultById);
+
+
 export { Router as UserResultRoutes };

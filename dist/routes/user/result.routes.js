@@ -11,4 +11,5 @@ exports.UserResultRoutes = Router;
 Router.get("/get-result", authentification_1.authentification, (0, authorization_1.authorization)(["user"]), result_controller_1.UserResultController.getResult);
 Router.post("/get-score-similarity/:simulationId/:scenarioId", upload_1.default.none(), authentification_1.authentification, (0, authorization_1.authorization)(["user"]), result_controller_1.UserResultController.postSimilarity);
 Router.get("/get-result-simulations", upload_1.default.none(), authentification_1.authentification, (0, authorization_1.authorization)(["user"]), result_controller_1.UserResultController.getSimulationResult);
+Router.get("/get-result-simulation-by-id/:simulationId", upload_1.default.none(), authentification_1.authentification, (0, authorization_1.authorization)(["user"]), result_controller_1.UserResultController.getSimulationResultById);
 //# sourceMappingURL=result.routes.js.map
