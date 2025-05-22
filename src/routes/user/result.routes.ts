@@ -21,4 +21,11 @@ Router.post(
     authorization(["user"]),
     UserResultController.postSimilarity);
 
+Router.get(
+    "/get-result-simulations", 
+    upload.none(),
+    authentification,
+    authorization(["user"]),
+    UserResultController.getSimulationResult);
+
 export { Router as UserResultRoutes };

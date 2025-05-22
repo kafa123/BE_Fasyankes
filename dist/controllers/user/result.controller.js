@@ -126,14 +126,13 @@ class UserResultController {
                     yield userScenarioRepo.save(userScenarioNew);
                 }
                 else {
-                    // Cari data terbaru berdasarkan created_at atau updated_at
                     const latestRecord = yield userScenarioRepo.findOne({
                         where: {
                             user_id: userId,
                             scenario_id: Number(scenarioId),
                         },
                         order: {
-                            createdAt: "DESC" // atau updated_at tergantung kolom timestamp yang kamu punya
+                            createdAt: "DESC"
                         }
                     });
                     if (latestRecord) {
@@ -141,7 +140,6 @@ class UserResultController {
                         yield userScenarioRepo.save(latestRecord);
                     }
                     else {
-                        // Kalau gak ada data sama sekali, kamu bisa insert baru juga jika perlu
                         const userScenarioNew = userScenarioRepo.create({
                             user_id: userId,
                             scenario_id: Number(scenarioId),
@@ -154,6 +152,51 @@ class UserResultController {
                 res.status(200).json({ data: {
                         message: "Success",
                         totalScore: totalScore,
+                    } });
+            }
+            catch (error) {
+                console.error(error);
+                res.status(500).json({ error: "Internal Server Error" });
+            }
+        });
+    }
+    static getSimulationResult(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            try {
+                const scenarioRepo = data_source_1.AppDataSource.getRepository(Scenario_entity_1.Scenario);
+                const personalCaseRepo = data_source_1.AppDataSource.getRepository(PersonalCase_entity_1.PersonalCase);
+                const userScenarioRepo = data_source_1.AppDataSource.getRepository(UserScenario_entity_1.UserScenario);
+                const userId = (_a = req["currentUser"]) === null || _a === void 0 ? void 0 : _a.id;
+                const result = yield personalCaseRepo
+                    .createQueryBuilder("pc")
+                    .innerJoin("pc.simulation", "sm")
+                    .innerJoin("scenarios", "s", "s.simulation_id = pc.simulation_id")
+                    .innerJoin(qb => qb
+                    .select("us.user_id", "user_id")
+                    .addSelect("us.scenario_id", "scenario_id")
+                    .addSelect("AVG(us.score_similarity)", "avg_score")
+                    .from(UserScenario_entity_1.UserScenario, "us")
+                    .where("us.user_id = :userId", { userId })
+                    .groupBy("us.user_id, us.scenario_id"), "aps", "aps.scenario_id = s.id AND aps.user_id = pc.user_id")
+                    .where("pc.user_id = :userId", { userId })
+                    .select("pc.simulation_id", "simulation_id")
+                    .addSelect("sm.case_description", "case_description")
+                    .addSelect("AVG(aps.avg_score)", "average_score")
+                    .groupBy("pc.simulation_id, sm.case_description")
+                    .orderBy("pc.simulation_id")
+                    .getRawMany();
+                if (result.length === 0) {
+                    res.status(404).json({ error: "No results found" });
+                    return;
+                }
+                ;
+                res.status(200).json({ data: {
+                        result: result.map((item) => ({
+                            simulation_id: item.simulation_id,
+                            case_description: item.case_description,
+                            average_score: Number(item.average_score).toFixed(2),
+                        })),
                     } });
             }
             catch (error) {
