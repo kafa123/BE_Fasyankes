@@ -51,6 +51,11 @@ export class Simulations1743006201765 implements MigrationInterface {
                         isNullable: false,
                     },
                     {
+                        name: "symptoms",
+                        type: "text",
+                        isNullable: true,
+                    },
+                    {
                         name: "case_description",
                         type: "text",
                         isNullable: false,

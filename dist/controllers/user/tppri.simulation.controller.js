@@ -19,8 +19,14 @@ class UserTPPRISimulationController {
             var _a;
             try {
                 const userId = (_a = req["currentUser"]) === null || _a === void 0 ? void 0 : _a.id;
+                const simulationsRepo = data_source_1.AppDataSource.getRepository(Simulation_entity_1.Simulation);
                 if (!userId) {
-                    res.status(400).json({ error: "User ID is required" });
+                    const simulations = yield simulationsRepo.find({
+                        where: {
+                            category: "rawat_inap"
+                        }
+                    });
+                    res.status(200).json({ data: simulations });
                     return;
                 }
                 const repo = data_source_1.AppDataSource.getRepository(PersonalCase_entity_1.PersonalCase);

@@ -19,11 +19,17 @@ class UserTPPGDSimulationController {
             var _a;
             try {
                 const userId = (_a = req["currentUser"]) === null || _a === void 0 ? void 0 : _a.id;
+                const repo = data_source_1.AppDataSource.getRepository(PersonalCase_entity_1.PersonalCase);
+                const simulationsRepo = data_source_1.AppDataSource.getRepository(Simulation_entity_1.Simulation);
                 if (!userId) {
-                    res.status(400).json({ error: "User ID is required" });
+                    const simulations = yield simulationsRepo.find({
+                        where: {
+                            category: "gawat_darurat"
+                        }
+                    });
+                    res.status(200).json({ data: simulations });
                     return;
                 }
-                const repo = data_source_1.AppDataSource.getRepository(PersonalCase_entity_1.PersonalCase);
                 const personalCases = yield repo.find({
                     where: {
                         user_id: userId,

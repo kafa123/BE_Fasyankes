@@ -43,6 +43,12 @@ export class ComponentController {
             } else if (type == "admission-rawat-jalan") {
                 const admission = await ComponentService.getAdmissionOutPatient(simulation_id)
                 res.status(201).json({ data: admission });
+            } else if (type == "admission-rawat-inap") {
+                const admission = await ComponentService.getAdmissionInpatient(simulation_id)
+                res.status(201).json({ data: admission});
+            } else if (type == "admission-gawat-darurat") {
+                const admission = await ComponentService.getAdmissionIGD(simulation_id);
+                res.status(201).json({ data: admission});
             }
         } catch (e) {
 

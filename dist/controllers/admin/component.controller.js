@@ -56,6 +56,14 @@ class ComponentController {
                     const admission = yield ComponentService_1.ComponentService.getAdmissionOutPatient(simulation_id);
                     res.status(201).json({ data: admission });
                 }
+                else if (type == "admission-rawat-inap") {
+                    const admission = yield ComponentService_1.ComponentService.getAdmissionInpatient(simulation_id);
+                    res.status(201).json({ data: admission });
+                }
+                else if (type == "admission-gawat-darurat") {
+                    const admission = yield ComponentService_1.ComponentService.getAdmissionIGD(simulation_id);
+                    res.status(201).json({ data: admission });
+                }
             }
             catch (e) {
             }

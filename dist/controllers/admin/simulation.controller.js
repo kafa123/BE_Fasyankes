@@ -30,10 +30,26 @@ class AdminSimulationController {
             }
         });
     }
+    static getOne(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const repo = data_source_1.AppDataSource.getRepository(Simulation_entity_1.Simulation);
+                const simulation = yield repo.findOneBy({ id: parseInt(req.params.id) });
+                if (!simulation) {
+                    res.status(404).json({ error: "Simulation not found" });
+                    return;
+                }
+                res.status(200).json({ data: simulation });
+            }
+            catch (error) {
+                res.status(500).json({ message: "Internal Server Error", error: error.message });
+            }
+        });
+    }
     static create(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { patient_type, case_type, category, perujuk, payment_method, case_description, diagnose } = req.body;
+                const { patient_type, case_type, category, perujuk, payment_method, symptoms, case_description, diagnose } = req.body;
                 if (!patient_type || !case_type || !category || !payment_method || !case_description || !diagnose) {
                     res.status(400).json({ error: "All fields are required" });
                     return;
@@ -45,6 +61,7 @@ class AdminSimulationController {
                     patient_type,
                     case_type,
                     payment_method,
+                    symptoms,
                     case_description,
                     diagnose,
                     category,
