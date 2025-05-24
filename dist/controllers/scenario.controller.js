@@ -12,6 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ScenarioUserController = void 0;
 const data_source_1 = require("../data-source");
 const Scenario_entity_1 = require("../entity/Scenario.entity");
+const Simulation_entity_1 = require("../entity/Simulation.entity");
+const ComponentService_1 = require("../services/ComponentService");
+const Answer_entity_1 = require("../entity/Answer.entity");
 class ScenarioUserController {
     static getAll(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -38,14 +41,43 @@ class ScenarioUserController {
     static getOne(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const repo = data_source_1.AppDataSource.getRepository(Scenario_entity_1.Scenario);
-                const scenario = yield repo.findOneBy({ id: parseInt(req.params.id) });
-                if (!scenario)
+                const order = parseInt(req.params.id);
+                const scenarioRepo = data_source_1.AppDataSource.getRepository(Scenario_entity_1.Scenario);
+                const answerRepo = data_source_1.AppDataSource.getRepository(Answer_entity_1.Answer);
+                const scenario = yield scenarioRepo.findOneBy({ order });
+                if (!scenario) {
                     res.status(404).json({ error: "Scenario not found" });
-                res.status(200).json({ data: scenario });
+                    return;
+                }
+                const simulation = yield data_source_1.AppDataSource.getRepository(Simulation_entity_1.Simulation).findOneByOrFail({
+                    id: scenario.simulation_id
+                });
+                const answer = yield answerRepo.findOneBy({
+                    scenario_id: scenario.id
+                });
+                let component = null;
+                switch (scenario.component) {
+                    case "pendaftaran":
+                        component = yield ComponentService_1.ComponentService.getPatient(simulation.id);
+                        break;
+                    case "admission-rawat-jalan":
+                        component = yield ComponentService_1.ComponentService.getAdmissionOutPatient(simulation.id);
+                        break;
+                    case "admission-rawat-inap":
+                        component = yield ComponentService_1.ComponentService.getAdmissionInpatient(simulation.id);
+                        break;
+                    case "admission-gawat-darurat":
+                        component = yield ComponentService_1.ComponentService.getAdmissionIGD(simulation.id);
+                        break;
+                }
+                res.status(200).json({
+                    data: scenario,
+                    answer: answer,
+                    component: component
+                });
             }
-            catch (error) {
-                res.status(500).json({ error: "Internal Server Error" });
+            catch (e) {
+                res.status(500).json({ message: "error", error: e.message });
             }
         });
     }

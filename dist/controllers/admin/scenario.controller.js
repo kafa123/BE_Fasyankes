@@ -60,16 +60,41 @@ class ScenarioController {
     static update(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const repo = data_source_1.AppDataSource.getRepository(Scenario_entity_1.Scenario);
-                let scenario = yield repo.findOneBy({ id: parseInt(req.params.id) });
-                if (!scenario)
+                const id = parseInt(req.params.id);
+                if (isNaN(id)) {
+                    res.status(400).json({ error: "Invalid ID format" });
+                    return;
+                }
+                const scenarioRepo = data_source_1.AppDataSource.getRepository(Scenario_entity_1.Scenario);
+                const answerRepo = data_source_1.AppDataSource.getRepository(Answer_entity_1.Answer);
+                let scenario = yield scenarioRepo.findOneBy({ id });
+                if (!scenario) {
                     res.status(404).json({ error: "Scenario not found" });
-                repo.merge(scenario, req.body);
-                yield repo.save(scenario);
-                res.status(200).json({ message: "Scenario updated successfully", scenario });
+                    return;
+                }
+                // Update scenario fields
+                scenarioRepo.merge(scenario, req.body);
+                const updatedScenario = yield scenarioRepo.save(scenario);
+                // Update answer if it exists
+                let answer = yield answerRepo.findOneBy({ scenario_id: scenario.id });
+                if (answer) {
+                    if (req.body.answer_text !== undefined) {
+                        answer.answer_text = req.body.answer_text;
+                    }
+                    if (req.file) {
+                        answer.answer_image = `/uploads/${req.file.filename}`;
+                    }
+                    yield answerRepo.save(answer);
+                }
+                res.status(200).json({
+                    message: "Scenario updated successfully",
+                    scenario: updatedScenario,
+                    answer: answer !== null && answer !== void 0 ? answer : null
+                });
             }
             catch (error) {
-                res.status(500).json({ error: "Internal Server Error" });
+                console.error(error);
+                res.status(500).json({ error: "Internal Server Error", message: error.message });
             }
         });
     }
@@ -79,11 +104,11 @@ class ScenarioController {
                 const repo = data_source_1.AppDataSource.getRepository(Scenario_entity_1.Scenario);
                 const result = yield repo.delete(req.params.id);
                 if (result.affected === 0)
-                    res.status(404).json({ error: "SCenario not found" });
+                    res.status(404).json({ error: "Scenario not found" });
                 res.status(200).json({ message: "Scenario deleted successfully" });
             }
             catch (error) {
-                res.status(500).json({ error: "Internal Server Error" });
+                res.status(500).json({ error: "Internal Server Error", message: error.message });
             }
         });
     }

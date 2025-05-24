@@ -10,6 +10,6 @@ const Router = express.Router();
 exports.ComponentRouter = Router;
 Router.post("/post-component/:type", authentification_1.authentification, (0, authorization_1.authorization)(["admin"]), component_controller_1.ComponentController.create);
 Router.get("/get-component/:type/:simulation_id", authentification_1.authentification, (0, authorization_1.authorization)(["admin"]), component_controller_1.ComponentController.getOne);
-Router.put("/update-admission/:simulation_id", authentification_1.authentification, (0, authorization_1.authorization)(["admin"]), admission_controller_1.AdmissionController.update);
-Router.delete("/delete-admission/:simulation_id", authentification_1.authentification, (0, authorization_1.authorization)(["admin"]), admission_controller_1.AdmissionController.delete);
+Router.put("/update-component/:type/:simulation_id", authentification_1.authentification, (0, authorization_1.authorization)(["admin"]), component_controller_1.ComponentController.update);
+Router.delete("/delete-component/:type/:simulation_id", authentification_1.authentification, (0, authorization_1.authorization)(["admin"]), admission_controller_1.AdmissionController.delete);
 //# sourceMappingURL=component.routes.js.map

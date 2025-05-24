@@ -66,6 +66,66 @@ class ComponentController {
                 }
             }
             catch (e) {
+                res.status(500).json({ message: "error", error: e.message });
+            }
+        });
+    }
+    static update(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const type = req.params.type;
+                const simulation_id = parseInt(req.params.simulation_id);
+                if (type == "pendaftaran") {
+                    const patientData = req.body;
+                    const savedPatient = yield ComponentService_1.ComponentService.updatePatient(simulation_id, patientData);
+                    res.status(201).json({ message: "Patient successfully updated", savedPatient });
+                }
+                else if (type == "admission-rawat-jalan") {
+                    const admissionData = req.body;
+                    const admission = yield ComponentService_1.ComponentService.updateAdmissionOutPatient(simulation_id, admissionData);
+                    res.status(201).json({ message: "Patient successfully updated", data: admission });
+                }
+                else if (type == "admission-rawat-inap") {
+                    const admissionData = req.body;
+                    const admission = yield ComponentService_1.ComponentService.updateAdmissionInpatient(simulation_id, admissionData);
+                    res.status(201).json({ message: "Patient successfully updated", data: admission });
+                }
+                else if (type == "admission-gawat-darurat") {
+                    const admissionDataIGD = req.body;
+                    console.log("admissionData", admissionDataIGD);
+                    const admission = yield ComponentService_1.ComponentService.updateAdmissionIGDPatient(simulation_id, admissionDataIGD);
+                    res.status(201).json({ message: "Data successfully updated", data: admission });
+                }
+            }
+            catch (e) {
+                res.status(500).json({ message: "error", error: e.message });
+            }
+        });
+    }
+    static delete(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const type = req.params.type;
+                const simulation_id = parseInt(req.params.simulation_id);
+                if (type == "pendaftaran") {
+                    const savedPatient = yield ComponentService_1.ComponentService.deletePatient(simulation_id);
+                    res.status(201).json({ message: savedPatient.message });
+                }
+                else if (type == "admission-rawat-jalan") {
+                    const admission = yield ComponentService_1.ComponentService.deleteAdmissionOutpatient(simulation_id);
+                    res.status(201).json({ message: admission.message });
+                }
+                else if (type == "admission-rawat-inap") {
+                    const admission = yield ComponentService_1.ComponentService.deleteAdmissionInpatient(simulation_id);
+                    res.status(201).json({ message: admission.message });
+                }
+                else if (type == "admission-gawat-darurat") {
+                    const admission = yield ComponentService_1.ComponentService.deleteAdmissionIGD(simulation_id);
+                    res.status(201).json({ message: admission.message });
+                }
+            }
+            catch (e) {
+                res.status(500).json({ message: "error", error: e.message });
             }
         });
     }
