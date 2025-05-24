@@ -17,6 +17,7 @@ Router.post(
 
 Router.put(
   "/update-scenario/:id",
+  upload.single("answer_image"),
   authentification,
   authorization(["admin"]),
   ScenarioController.update

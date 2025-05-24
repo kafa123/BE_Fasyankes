@@ -72,4 +72,6 @@ import { DocumentPatient } from "./DocumentPatient.entity";
 
     @OneToOne(() => DocumentPatient, (documentPatient) => documentPatient.simulation)
     documentPatient: DocumentPatient;
+
+    
   }

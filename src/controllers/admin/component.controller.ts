@@ -45,13 +45,64 @@ export class ComponentController {
                 res.status(201).json({ data: admission });
             } else if (type == "admission-rawat-inap") {
                 const admission = await ComponentService.getAdmissionInpatient(simulation_id)
-                res.status(201).json({ data: admission});
+                res.status(201).json({ data: admission });
             } else if (type == "admission-gawat-darurat") {
                 const admission = await ComponentService.getAdmissionIGD(simulation_id);
-                res.status(201).json({ data: admission});
+                res.status(201).json({ data: admission });
             }
         } catch (e) {
+            res.status(500).json({ message: "error", error: e.message });
+        }
+    }
 
+    static async update(req: Request, res: Response): Promise<void> {
+        try {
+            const type = req.params.type;
+            const simulation_id = parseInt(req.params.simulation_id);
+
+            if (type == "pendaftaran") {
+                const patientData: CreatePatientInput = req.body
+                const savedPatient = await ComponentService.updatePatient(simulation_id, patientData);
+                res.status(201).json({ message: "Patient successfully updated", savedPatient });
+            } else if (type == "admission-rawat-jalan") {
+                const admissionData: CreateAdmissionOutPatientInput = req.body
+                const admission = await ComponentService.updateAdmissionOutPatient(simulation_id, admissionData);
+                res.status(201).json({ message: "Patient successfully updated", data: admission });
+            } else if (type == "admission-rawat-inap") {
+                const admissionData: CreateAdmissionInPatientInput = req.body
+                const admission = await ComponentService.updateAdmissionInpatient(simulation_id, admissionData);
+                res.status(201).json({ message: "Patient successfully updated", data: admission });
+            } else if (type == "admission-gawat-darurat") {
+                const admissionDataIGD: CreateAdmissionIGDPatientInput = req.body
+                console.log("admissionData", admissionDataIGD);
+                const admission = await ComponentService.updateAdmissionIGDPatient(simulation_id, admissionDataIGD);
+                res.status(201).json({ message: "Data successfully updated", data: admission });
+            }
+        } catch (e) {
+            res.status(500).json({ message: "error", error: e.message });
+        }
+    }
+
+    static async delete(req: Request, res: Response): Promise<void> {
+        try {
+            const type = req.params.type;
+            const simulation_id = parseInt(req.params.simulation_id);
+
+            if (type == "pendaftaran") {
+                const savedPatient = await ComponentService.deletePatient(simulation_id);
+                res.status(201).json({ message: savedPatient.message });
+            } else if (type == "admission-rawat-jalan") {
+                const admission = await ComponentService.deleteAdmissionOutpatient(simulation_id);
+                res.status(201).json({ message: admission.message });
+            } else if (type == "admission-rawat-inap") {
+                const admission = await ComponentService.deleteAdmissionInpatient(simulation_id);
+                res.status(201).json({ message: admission.message });
+            } else if (type == "admission-gawat-darurat") {
+                const admission = await ComponentService.deleteAdmissionIGD(simulation_id);
+                res.status(201).json({ message: admission.message });
+            }
+        } catch (e) {
+            res.status(500).json({ message: "error", error: e.message });
         }
     }
 }

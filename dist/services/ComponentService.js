@@ -265,6 +265,252 @@ class ComponentService {
             }
         });
     }
+    static updatePatient(simulation_id, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { patient, patient_detail, value_belief, privacy_request, family_members, } = data;
+            const patientRepo = data_source_1.AppDataSource.getRepository(Patient_entity_1.Patient);
+            const patientDetailRepo = data_source_1.AppDataSource.getRepository(PatientDetail_entity_1.PatientDetail);
+            const valueBeliefRepo = data_source_1.AppDataSource.getRepository(ValueBelief_entity_1.ValueBelief);
+            const privacyRequestRepo = data_source_1.AppDataSource.getRepository(PrivacyRequest_entity_1.PrivacyRequest);
+            const healthInfoRepo = data_source_1.AppDataSource.getRepository(HealthInformationPatient_entity_1.HealthInformationPatient);
+            const existingPatient = yield patientRepo.findOneBy({ simulation_id });
+            if (!existingPatient) {
+                throw new Error("Patient not found for update.");
+            }
+            // Update patient core data
+            yield patientRepo.update({ simulation_id: simulation_id }, patient);
+            // Update or create patient_detail
+            if (patient_detail) {
+                const existingDetail = yield patientDetailRepo.findOneBy({ patient_id: existingPatient.id });
+                if (existingDetail) {
+                    yield patientDetailRepo.update({ patient_id: existingPatient.id }, patient_detail);
+                }
+                else {
+                    const newDetail = patientDetailRepo.create(Object.assign(Object.assign({}, patient_detail), { patient_id: existingPatient.id }));
+                    yield patientDetailRepo.save(newDetail);
+                }
+            }
+            // Update or create value_belief
+            if (value_belief === null || value_belief === void 0 ? void 0 : value_belief.value_belief) {
+                const existingVB = yield valueBeliefRepo.findOneBy({ patient_id: existingPatient.id });
+                if (existingVB) {
+                    yield valueBeliefRepo.update({ patient_id: existingPatient.id }, { value_belief: value_belief.value_belief });
+                }
+                else {
+                    const newVB = valueBeliefRepo.create({
+                        patient_id: existingPatient.id,
+                        value_belief: value_belief.value_belief,
+                    });
+                    yield valueBeliefRepo.save(newVB);
+                }
+            }
+            // Update or create privacy_request
+            if (privacy_request === null || privacy_request === void 0 ? void 0 : privacy_request.privacy_request) {
+                const existingPR = yield privacyRequestRepo.findOneBy({ patient_id: existingPatient.id });
+                if (existingPR) {
+                    yield privacyRequestRepo.update({ patient_id: existingPatient.id }, { privacy_request: privacy_request.privacy_request });
+                }
+                else {
+                    const newPR = privacyRequestRepo.create({
+                        patient_id: existingPatient.id,
+                        privacy_request: privacy_request.privacy_request,
+                    });
+                    yield privacyRequestRepo.save(newPR);
+                }
+            }
+            // Replace all family members (HealthInformationPatient)
+            if (Array.isArray(family_members)) {
+                yield healthInfoRepo.delete({ patient_id: existingPatient.id });
+                for (const fm of family_members) {
+                    if (fm.name) {
+                        const newFM = healthInfoRepo.create({
+                            patient_id: existingPatient.id,
+                            name: fm.name,
+                            family_relationship: fm.family_relationship,
+                            phone_number: fm.phone_number,
+                        });
+                        yield healthInfoRepo.save(newFM);
+                    }
+                }
+            }
+            const updatedPatient = yield patientRepo.findOneBy({ simulation_id });
+            const updatedDetail = yield patientDetailRepo.findOneBy({ patient_id: patient.id });
+            const updatedValueBelief = yield valueBeliefRepo.findOneBy({ patient_id: patient.id });
+            const updatedPrivacyRequest = yield privacyRequestRepo.findOneBy({ patient_id: patient.id });
+            const updatedFamilyMembers = yield healthInfoRepo.find({
+                where: { patient_id: patient.id },
+                order: { id: "ASC" }
+            });
+            return {
+                patient: updatedPatient,
+                patient_detail: updatedDetail,
+                value_belief: updatedValueBelief,
+                privacy_request: updatedPrivacyRequest,
+                family_members: updatedFamilyMembers,
+            };
+        });
+    }
+    static updateAdmissionOutPatient(simulation_id, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { visit, referral, sep, document } = data;
+                const patient = yield data_source_1.AppDataSource.getRepository(Patient_entity_1.Patient).findOneByOrFail({ simulation_id });
+                const patient_id = patient.id;
+                const visitRepo = data_source_1.AppDataSource.getRepository(PatientVisitData_entity_1.PatientVisitData);
+                const referralRepo = data_source_1.AppDataSource.getRepository(PatientReferralData_entity_1.PatientReferralData);
+                const sepRepo = data_source_1.AppDataSource.getRepository(SepData_entity_1.SepData);
+                const documentRepo = data_source_1.AppDataSource.getRepository(DocumentPatient_entity_1.DocumentPatient);
+                yield visitRepo.update({ patient_id: patient_id }, visit);
+                yield referralRepo.update({ patient_id: patient_id }, referral);
+                yield sepRepo.update({ patient_id: patient_id }, sep);
+                yield documentRepo.update({ simulation_id: simulation_id }, document);
+                const updatedVisit = yield visitRepo.findOneBy({ patient_id });
+                const updatedReferral = yield referralRepo.findOneBy({ patient_id });
+                const updatedSEP = yield sepRepo.findOneBy({ patient_id });
+                const updatedDocument = yield documentRepo.findOneBy({ simulation_id });
+                return {
+                    message: "Admission outpatient data updated successfully.",
+                    visit: updatedVisit,
+                    referral: updatedReferral,
+                    sep: updatedSEP,
+                    document: updatedDocument,
+                };
+            }
+            catch (error) {
+                return error;
+            }
+        });
+    }
+    static updateAdmissionInpatient(simulation_id, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { inpatientRecord, responsiblePerson, healthInformation, valueBelief, privacyRequest, documentPatient, } = data;
+            const inpatientRecordRepo = data_source_1.AppDataSource.getRepository(InpatientRecord_entity_1.InpatientRecord);
+            const responsiblePersonRepo = data_source_1.AppDataSource.getRepository(ResponsiblePerson_entity_1.ResponsiblePerson);
+            const healthInfoRepo = data_source_1.AppDataSource.getRepository(HealthInformationPatient_entity_1.HealthInformationPatient);
+            const valueBeliefRepo = data_source_1.AppDataSource.getRepository(ValueBelief_entity_1.ValueBelief);
+            const privacyRequestRepo = data_source_1.AppDataSource.getRepository(PrivacyRequest_entity_1.PrivacyRequest);
+            const documentPatientRepo = data_source_1.AppDataSource.getRepository(DocumentPatient_entity_1.DocumentPatient);
+            try {
+                const patient = yield data_source_1.AppDataSource.getRepository(Patient_entity_1.Patient).findOneByOrFail({ simulation_id });
+                const patient_id = patient.id;
+                yield inpatientRecordRepo.update({ patient_id: patient_id }, inpatientRecord);
+                yield responsiblePersonRepo.update({ patient_id: patient_id }, responsiblePerson);
+                if (healthInformation) {
+                    yield healthInfoRepo.update({ patient_id: patient_id }, healthInformation);
+                }
+                if (valueBelief) {
+                    yield valueBeliefRepo.update({ patient_id: patient_id }, valueBelief);
+                }
+                if (privacyRequest) {
+                    yield privacyRequestRepo.update({ patient_id: patient_id }, privacyRequest);
+                }
+                if (documentPatient) {
+                    yield documentPatientRepo.update({ simulation_id: simulation_id }, documentPatient);
+                }
+                return {
+                    message: "Admission inpatient data updated successfully.",
+                    inpatientRecord: yield inpatientRecordRepo.findOneBy({ patient_id }),
+                    responsiblePerson: yield responsiblePersonRepo.findOneBy({ patient_id }),
+                    healthInformation: healthInformation ? yield healthInfoRepo.findOneBy({ patient_id }) : null,
+                    valueBelief: valueBelief ? yield valueBeliefRepo.findOneBy({ patient_id }) : null,
+                    privacyRequest: privacyRequest ? yield privacyRequestRepo.findOneBy({ patient_id }) : null,
+                    documentPatient: documentPatient ? yield documentPatientRepo.findOneBy({ simulation_id }) : null,
+                };
+            }
+            catch (error) {
+                throw new Error(`Failed to update admission inpatient: ${error.message}`);
+            }
+        });
+    }
+    static updateAdmissionIGDPatient(simulation_id, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { visitIGD, document } = data;
+            const patientVisitIGDRepo = data_source_1.AppDataSource.getRepository(PatientVisitIGDData_entity_1.PatientVisitIGD);
+            const documentPatientRepo = data_source_1.AppDataSource.getRepository(DocumentPatient_entity_1.DocumentPatient);
+            try {
+                yield patientVisitIGDRepo.update({ simulation_id: simulation_id }, visitIGD);
+                yield documentPatientRepo.update({ simulation_id: simulation_id }, document);
+                const updatedVisitIGD = yield patientVisitIGDRepo.findOneBy({ simulation_id });
+                const updatedDocument = yield documentPatientRepo.findOneBy({ simulation_id });
+                return {
+                    message: "IGD admission data updated successfully.",
+                    visitIGD: updatedVisitIGD,
+                    document: updatedDocument,
+                };
+            }
+            catch (error) {
+                throw new Error(`Failed to update IGD admission: ${error.message}`);
+            }
+        });
+    }
+    static deletePatient(simulation_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const patient = data_source_1.AppDataSource.getRepository(Patient_entity_1.Patient);
+                yield patient.delete({ simulation_id: simulation_id });
+                return { message: "Patient and related records deleted successfully." };
+            }
+            catch (error) {
+                throw new Error(`Failed to delete patient data: ${error.message}`);
+            }
+        });
+    }
+    static deleteAdmissionOutpatient(simulation_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const patient = yield data_source_1.AppDataSource.getRepository(Patient_entity_1.Patient).findOneByOrFail({ simulation_id: simulation_id });
+                const visitRepo = data_source_1.AppDataSource.getRepository(PatientVisitData_entity_1.PatientVisitData);
+                const referralRepo = data_source_1.AppDataSource.getRepository(PatientReferralData_entity_1.PatientReferralData);
+                const sepRepo = data_source_1.AppDataSource.getRepository(SepData_entity_1.SepData);
+                const documentRepo = data_source_1.AppDataSource.getRepository(DocumentPatient_entity_1.DocumentPatient);
+                yield visitRepo.delete({ patient_id: patient.id });
+                yield referralRepo.delete({ patient_id: patient.id });
+                yield sepRepo.delete({ patient_id: patient.id });
+                yield documentRepo.delete({ simulation_id: simulation_id });
+                return { message: "Admission Data is Succesfully deleted" };
+            }
+            catch (error) {
+                throw new Error(`failed to delete admission data: ${error.message}`);
+            }
+        });
+    }
+    static deleteAdmissionInpatient(simulation_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const patient = yield data_source_1.AppDataSource.getRepository(Patient_entity_1.Patient).findOneByOrFail({ simulation_id: simulation_id });
+                const inpatientRecordRepo = data_source_1.AppDataSource.getRepository(InpatientRecord_entity_1.InpatientRecord);
+                const responsiblePersonRepo = data_source_1.AppDataSource.getRepository(ResponsiblePerson_entity_1.ResponsiblePerson);
+                const healthInfoRepo = data_source_1.AppDataSource.getRepository(HealthInformationPatient_entity_1.HealthInformationPatient);
+                const valueBeliefRepo = data_source_1.AppDataSource.getRepository(ValueBelief_entity_1.ValueBelief);
+                const privacyRequestRepo = data_source_1.AppDataSource.getRepository(PrivacyRequest_entity_1.PrivacyRequest);
+                const documentPatientRepo = data_source_1.AppDataSource.getRepository(DocumentPatient_entity_1.DocumentPatient);
+                yield inpatientRecordRepo.delete({ patient_id: patient.id });
+                yield responsiblePersonRepo.delete({ patient_id: patient.id });
+                yield healthInfoRepo.delete({ patient_id: patient.id });
+                yield valueBeliefRepo.delete({ patient_id: patient.id });
+                yield privacyRequestRepo.delete({ patient_id: patient.id });
+                yield documentPatientRepo.delete({ simulation_id: simulation_id });
+                return { message: "Admission Data is Succesfully deleted" };
+            }
+            catch (error) {
+                throw new Error(`failed to delete admission data: ${error.message}`);
+            }
+        });
+    }
+    static deleteAdmissionIGD(simulation_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const patientVisitIGDRepo = data_source_1.AppDataSource.getRepository(PatientVisitIGDData_entity_1.PatientVisitIGD);
+                const documentPatientRepo = data_source_1.AppDataSource.getRepository(DocumentPatient_entity_1.DocumentPatient);
+                yield patientVisitIGDRepo.delete({ simulation_id: simulation_id });
+                yield documentPatientRepo.delete({ simulation_id: simulation_id });
+                return { message: "Admission Data is Succesfully deleted" };
+            }
+            catch (error) {
+                throw new Error(`failed to delete admission data: ${error.message}`);
+            }
+        });
+    }
 }
 exports.ComponentService = ComponentService;
 //# sourceMappingURL=ComponentService.js.map

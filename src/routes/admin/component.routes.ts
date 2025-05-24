@@ -23,13 +23,13 @@ Router.get(
 )
 
 Router.put(
-  "/update-admission/:simulation_id",
+  "/update-component/:type/:simulation_id",
   authentification,
   authorization(["admin"]),
-  AdmissionController.update
+  ComponentController.update
 )
 Router.delete(
-  "/delete-admission/:simulation_id",
+  "/delete-component/:type/:simulation_id",
   authentification,
   authorization(["admin"]),
   AdmissionController.delete

@@ -16,7 +16,7 @@ import { Simulation } from "../entity/Simulation.entity";
 
 export interface CreatePatientInput {
   patient: any;
-  patient_detail?: any;
+  patient_detail?: PatientDetail;
   value_belief?: { value_belief: string };
   privacy_request?: { privacy_request: string };
   family_members?: Array<{ name: string; family_relationship: string; phone_number: string }>;
@@ -226,7 +226,6 @@ export class ComponentService {
     }
   }
 
-
   static async createAdmissionIGDPatient(data: CreateAdmissionIGDPatientInput) {
     try {
       const { simulation_id, visitIGD, document } = data;
@@ -362,6 +361,284 @@ export class ComponentService {
       };
     } catch (error) {
       throw new Error(`Failed to get admission data: ${error.message}`);
+    }
+  }
+
+  static async updatePatient(simulation_id: number, data: CreatePatientInput) {
+    const {
+      patient,
+      patient_detail,
+      value_belief,
+      privacy_request,
+      family_members,
+    } = data;
+
+    const patientRepo = AppDataSource.getRepository(Patient);
+    const patientDetailRepo = AppDataSource.getRepository(PatientDetail);
+    const valueBeliefRepo = AppDataSource.getRepository(ValueBelief);
+    const privacyRequestRepo = AppDataSource.getRepository(PrivacyRequest);
+    const healthInfoRepo = AppDataSource.getRepository(HealthInformationPatient);
+
+    const existingPatient = await patientRepo.findOneBy({ simulation_id });
+    if (!existingPatient) {
+      throw new Error("Patient not found for update.");
+    }
+
+    // Update patient core data
+    await patientRepo.update({ simulation_id: simulation_id }, patient);
+
+    // Update or create patient_detail
+    if (patient_detail) {
+      const existingDetail = await patientDetailRepo.findOneBy({ patient_id: existingPatient.id });
+      if (existingDetail) {
+        await patientDetailRepo.update({ patient_id: existingPatient.id }, patient_detail);
+      } else {
+        const newDetail = patientDetailRepo.create({
+          ...patient_detail,
+          patient_id: existingPatient.id,
+        });
+        await patientDetailRepo.save(newDetail);
+      }
+    }
+
+    // Update or create value_belief
+    if (value_belief?.value_belief) {
+      const existingVB = await valueBeliefRepo.findOneBy({ patient_id: existingPatient.id });
+      if (existingVB) {
+        await valueBeliefRepo.update({ patient_id: existingPatient.id }, { value_belief: value_belief.value_belief });
+      } else {
+        const newVB = valueBeliefRepo.create({
+          patient_id: existingPatient.id,
+          value_belief: value_belief.value_belief,
+        });
+        await valueBeliefRepo.save(newVB);
+      }
+    }
+
+    // Update or create privacy_request
+    if (privacy_request?.privacy_request) {
+      const existingPR = await privacyRequestRepo.findOneBy({ patient_id: existingPatient.id });
+      if (existingPR) {
+        await privacyRequestRepo.update({ patient_id: existingPatient.id }, { privacy_request: privacy_request.privacy_request });
+      } else {
+        const newPR = privacyRequestRepo.create({
+          patient_id: existingPatient.id,
+          privacy_request: privacy_request.privacy_request,
+        });
+        await privacyRequestRepo.save(newPR);
+      }
+    }
+
+    // Replace all family members (HealthInformationPatient)
+    if (Array.isArray(family_members)) {
+      await healthInfoRepo.delete({ patient_id: existingPatient.id });
+      for (const fm of family_members) {
+        if (fm.name) {
+          const newFM = healthInfoRepo.create({
+            patient_id: existingPatient.id,
+            name: fm.name,
+            family_relationship: fm.family_relationship,
+            phone_number: fm.phone_number,
+          });
+          await healthInfoRepo.save(newFM);
+        }
+      }
+    }
+
+    const updatedPatient = await patientRepo.findOneBy({ simulation_id });
+    const updatedDetail = await patientDetailRepo.findOneBy({ patient_id: patient.id });
+    const updatedValueBelief = await valueBeliefRepo.findOneBy({ patient_id: patient.id });
+    const updatedPrivacyRequest = await privacyRequestRepo.findOneBy({ patient_id: patient.id });
+    const updatedFamilyMembers = await healthInfoRepo.find({
+      where: { patient_id: patient.id },
+      order: { id: "ASC" }
+    });
+
+    return {
+      patient: updatedPatient,
+      patient_detail: updatedDetail,
+      value_belief: updatedValueBelief,
+      privacy_request: updatedPrivacyRequest,
+      family_members: updatedFamilyMembers,
+    };
+  }
+
+  static async updateAdmissionOutPatient(simulation_id: number, data: CreateAdmissionOutPatientInput) {
+    try {
+      const { visit, referral, sep, document } = data;
+
+      const patient = await AppDataSource.getRepository(Patient).findOneByOrFail({ simulation_id });
+      const patient_id = patient.id;
+
+      const visitRepo = AppDataSource.getRepository(PatientVisitData);
+      const referralRepo = AppDataSource.getRepository(PatientReferralData);
+      const sepRepo = AppDataSource.getRepository(SepData);
+      const documentRepo = AppDataSource.getRepository(DocumentPatient);
+
+      await visitRepo.update({ patient_id: patient_id }, visit);
+      await referralRepo.update({ patient_id: patient_id }, referral);
+      await sepRepo.update({ patient_id: patient_id }, sep);
+      await documentRepo.update({ simulation_id: simulation_id }, document);
+
+      const updatedVisit = await visitRepo.findOneBy({ patient_id });
+      const updatedReferral = await referralRepo.findOneBy({ patient_id });
+      const updatedSEP = await sepRepo.findOneBy({ patient_id });
+      const updatedDocument = await documentRepo.findOneBy({ simulation_id });
+
+      return {
+        message: "Admission outpatient data updated successfully.",
+        visit: updatedVisit,
+        referral: updatedReferral,
+        sep: updatedSEP,
+        document: updatedDocument,
+      };
+    } catch (error) {
+      return error;
+    }
+  }
+
+  static async updateAdmissionInpatient(simulation_id: number, data: CreateAdmissionInPatientInput) {
+    const {
+      inpatientRecord,
+      responsiblePerson,
+      healthInformation,
+      valueBelief,
+      privacyRequest,
+      documentPatient,
+    } = data;
+
+    const inpatientRecordRepo = AppDataSource.getRepository(InpatientRecord);
+    const responsiblePersonRepo = AppDataSource.getRepository(ResponsiblePerson);
+    const healthInfoRepo = AppDataSource.getRepository(HealthInformationPatient);
+    const valueBeliefRepo = AppDataSource.getRepository(ValueBelief);
+    const privacyRequestRepo = AppDataSource.getRepository(PrivacyRequest);
+    const documentPatientRepo = AppDataSource.getRepository(DocumentPatient);
+
+    try {
+      const patient = await AppDataSource.getRepository(Patient).findOneByOrFail({ simulation_id });
+      const patient_id = patient.id;
+
+      await inpatientRecordRepo.update({ patient_id: patient_id }, inpatientRecord);
+      await responsiblePersonRepo.update({ patient_id: patient_id }, responsiblePerson);
+
+      if (healthInformation) {
+        await healthInfoRepo.update({ patient_id: patient_id }, healthInformation);
+      }
+
+      if (valueBelief) {
+        await valueBeliefRepo.update({ patient_id: patient_id }, valueBelief);
+      }
+
+      if (privacyRequest) {
+        await privacyRequestRepo.update({ patient_id: patient_id }, privacyRequest);
+      }
+
+      if (documentPatient) {
+        await documentPatientRepo.update({ simulation_id: simulation_id }, documentPatient);
+      }
+
+      return {
+        message: "Admission inpatient data updated successfully.",
+        inpatientRecord: await inpatientRecordRepo.findOneBy({ patient_id }),
+        responsiblePerson: await responsiblePersonRepo.findOneBy({ patient_id }),
+        healthInformation: healthInformation ? await healthInfoRepo.findOneBy({ patient_id }) : null,
+        valueBelief: valueBelief ? await valueBeliefRepo.findOneBy({ patient_id }) : null,
+        privacyRequest: privacyRequest ? await privacyRequestRepo.findOneBy({ patient_id }) : null,
+        documentPatient: documentPatient ? await documentPatientRepo.findOneBy({ simulation_id }) : null,
+      };
+    } catch (error) {
+      throw new Error(`Failed to update admission inpatient: ${error.message}`);
+    }
+  }
+
+  static async updateAdmissionIGDPatient(simulation_id: number, data: CreateAdmissionIGDPatientInput) {
+    const { visitIGD, document } = data;
+
+    const patientVisitIGDRepo = AppDataSource.getRepository(PatientVisitIGD);
+    const documentPatientRepo = AppDataSource.getRepository(DocumentPatient);
+
+    try {
+      await patientVisitIGDRepo.update({ simulation_id: simulation_id }, visitIGD);
+      await documentPatientRepo.update({ simulation_id: simulation_id }, document);
+
+      const updatedVisitIGD = await patientVisitIGDRepo.findOneBy({ simulation_id });
+      const updatedDocument = await documentPatientRepo.findOneBy({ simulation_id });
+
+      return {
+        message: "IGD admission data updated successfully.",
+        visitIGD: updatedVisitIGD,
+        document: updatedDocument,
+      };
+    } catch (error) {
+      throw new Error(`Failed to update IGD admission: ${error.message}`);
+    }
+  }
+
+  static async deletePatient(simulation_id: number) {
+    try {
+      const patient = AppDataSource.getRepository(Patient)
+      await patient.delete({ simulation_id: simulation_id })
+      return { message: "Patient and related records deleted successfully." };
+    } catch (error) {
+      throw new Error(`Failed to delete patient data: ${error.message}`);
+    }
+  }
+
+  static async deleteAdmissionOutpatient(simulation_id: number) {
+    try {
+      const patient = await AppDataSource.getRepository(Patient).findOneByOrFail({ simulation_id: simulation_id })
+
+      const visitRepo = AppDataSource.getRepository(PatientVisitData);
+      const referralRepo = AppDataSource.getRepository(PatientReferralData);
+      const sepRepo = AppDataSource.getRepository(SepData);
+      const documentRepo = AppDataSource.getRepository(DocumentPatient);
+
+      await visitRepo.delete({ patient_id: patient.id })
+      await referralRepo.delete({ patient_id: patient.id })
+      await sepRepo.delete({ patient_id: patient.id })
+      await documentRepo.delete({ simulation_id: simulation_id })
+
+      return { message: "Admission Data is Succesfully deleted" }
+    } catch (error) {
+      throw new Error(`failed to delete admission data: ${error.message}`);
+    }
+  }
+
+  static async deleteAdmissionInpatient(simulation_id: number) {
+    try {
+      const patient = await AppDataSource.getRepository(Patient).findOneByOrFail({ simulation_id: simulation_id })
+
+      const inpatientRecordRepo = AppDataSource.getRepository(InpatientRecord);
+      const responsiblePersonRepo = AppDataSource.getRepository(ResponsiblePerson);
+      const healthInfoRepo = AppDataSource.getRepository(HealthInformationPatient);
+      const valueBeliefRepo = AppDataSource.getRepository(ValueBelief);
+      const privacyRequestRepo = AppDataSource.getRepository(PrivacyRequest);
+      const documentPatientRepo = AppDataSource.getRepository(DocumentPatient);
+
+      await inpatientRecordRepo.delete({ patient_id: patient.id })
+      await responsiblePersonRepo.delete({ patient_id: patient.id })
+      await healthInfoRepo.delete({ patient_id: patient.id })
+      await valueBeliefRepo.delete({ patient_id: patient.id })
+      await privacyRequestRepo.delete({ patient_id: patient.id })
+      await documentPatientRepo.delete({ simulation_id: simulation_id })
+
+      return { message: "Admission Data is Succesfully deleted" }
+    } catch (error) {
+      throw new Error(`failed to delete admission data: ${error.message}`);
+    }
+  }
+
+  static async deleteAdmissionIGD(simulation_id: number) {
+    try {
+      const patientVisitIGDRepo = AppDataSource.getRepository(PatientVisitIGD);
+      const documentPatientRepo = AppDataSource.getRepository(DocumentPatient);
+
+      await patientVisitIGDRepo.delete({ simulation_id: simulation_id });
+      await documentPatientRepo.delete({ simulation_id: simulation_id });
+
+      return { message: "Admission Data is Succesfully deleted" }
+    } catch (error) {
+      throw new Error(`failed to delete admission data: ${error.message}`);
     }
   }
 }
