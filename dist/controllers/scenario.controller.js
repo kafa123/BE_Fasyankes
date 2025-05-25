@@ -27,7 +27,7 @@ class ScenarioUserController {
                 }
                 const scenarios = yield repo.find({ where: { simulation_id: simulationId } });
                 if (scenarios.length === 0) {
-                    res.status(404).json({ error: "No scenarios found for this simulation" });
+                    res.status(200).json({ message: "No scenarios found for this simulation" });
                     return;
                 }
                 res.status(200).json({ data: scenarios });
