@@ -74,26 +74,26 @@ class ComponentController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const type = req.params.type;
-                const simulation_id = parseInt(req.params.simulation_id);
+                const scenario_id = parseInt(req.params.scenario_id);
                 if (type == "pendaftaran") {
                     const patientData = req.body;
-                    const savedPatient = yield ComponentService_1.ComponentService.updatePatient(simulation_id, patientData);
+                    const savedPatient = yield ComponentService_1.ComponentService.updatePatient(scenario_id, patientData);
                     res.status(201).json({ message: "Patient successfully updated", savedPatient });
                 }
                 else if (type == "admission-rawat-jalan") {
                     const admissionData = req.body;
-                    const admission = yield ComponentService_1.ComponentService.updateAdmissionOutPatient(simulation_id, admissionData);
+                    const admission = yield ComponentService_1.ComponentService.updateAdmissionOutPatient(scenario_id, admissionData);
                     res.status(201).json({ message: "Patient successfully updated", data: admission });
                 }
                 else if (type == "admission-rawat-inap") {
                     const admissionData = req.body;
-                    const admission = yield ComponentService_1.ComponentService.updateAdmissionInpatient(simulation_id, admissionData);
+                    const admission = yield ComponentService_1.ComponentService.updateAdmissionInpatient(scenario_id, admissionData);
                     res.status(201).json({ message: "Patient successfully updated", data: admission });
                 }
                 else if (type == "admission-gawat-darurat") {
                     const admissionDataIGD = req.body;
                     console.log("admissionData", admissionDataIGD);
-                    const admission = yield ComponentService_1.ComponentService.updateAdmissionIGDPatient(simulation_id, admissionDataIGD);
+                    const admission = yield ComponentService_1.ComponentService.updateAdmissionIGDPatient(scenario_id, admissionDataIGD);
                     res.status(201).json({ message: "Data successfully updated", data: admission });
                 }
             }

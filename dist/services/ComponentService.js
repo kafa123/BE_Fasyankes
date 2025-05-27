@@ -25,6 +25,7 @@ const DocumentPatient_entity_1 = require("../entity/DocumentPatient.entity");
 const InpatientRecord_entity_1 = require("../entity/InpatientRecord.entity");
 const ResponsiblePerson_entity_1 = require("../entity/ResponsiblePerson.entity");
 const Simulation_entity_1 = require("../entity/Simulation.entity");
+const Scenario_entity_1 = require("../entity/Scenario.entity");
 class ComponentService {
     static createPatient(data) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -182,14 +183,14 @@ class ComponentService {
             const healthInfoRepo = data_source_1.AppDataSource.getRepository(HealthInformationPatient_entity_1.HealthInformationPatient);
             const patient = yield patientRepo.findOneBy({ simulation_id });
             if (!patient) {
-                throw new Error("Patient not found");
+                return null;
             }
             const patient_detail = yield patientDetailRepo.findOneBy({ patient_id: patient.id });
             const value_belief = yield valueBeliefRepo.findOneBy({ patient_id: patient.id });
             const privacy_request = yield privacyRequestRepo.findOneBy({ patient_id: patient.id });
             const health_information_patients = yield healthInfoRepo.findBy({ patient_id: patient.id });
             return {
-                data: patient,
+                data: patient !== null && patient !== void 0 ? patient : null,
                 patient_detail: patient_detail !== null && patient_detail !== void 0 ? patient_detail : null,
                 value_belief: value_belief !== null && value_belief !== void 0 ? value_belief : null,
                 privacy_request: privacy_request !== null && privacy_request !== void 0 ? privacy_request : null,
@@ -199,20 +200,21 @@ class ComponentService {
     }
     static getAdmissionOutPatient(simulation_id) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b;
             try {
                 const SimulationData = yield data_source_1.AppDataSource.getRepository(Simulation_entity_1.Simulation).findOneOrFail({ where: { id: simulation_id } });
-                const patient = yield data_source_1.AppDataSource.getRepository(Patient_entity_1.Patient).findOneByOrFail({ simulation_id });
-                const patient_detail = yield data_source_1.AppDataSource.getRepository(PatientDetail_entity_1.PatientDetail).findOneByOrFail({ patient_id: patient.id });
+                const patient = yield data_source_1.AppDataSource.getRepository(Patient_entity_1.Patient).findOneBy({ simulation_id });
+                const patient_detail = yield data_source_1.AppDataSource.getRepository(PatientDetail_entity_1.PatientDetail).findOneBy({ patient_id: patient.id });
                 const visit = yield data_source_1.AppDataSource.getRepository(PatientVisitData_entity_1.PatientVisitData).findOneBy({ patient_id: patient.id });
                 const referral = yield data_source_1.AppDataSource.getRepository(PatientReferralData_entity_1.PatientReferralData).findOneBy({ patient_id: patient.id });
                 const sep = yield data_source_1.AppDataSource.getRepository(SepData_entity_1.SepData).findOneBy({ patient_id: patient.id });
                 const document = yield data_source_1.AppDataSource.getRepository(DocumentPatient_entity_1.DocumentPatient).findOneBy({ simulation_id });
-                const data_kunjungan = Object.assign(Object.assign({}, visit), { cara_pembayaran: SimulationData.payment_method, nomer_asuransi: patient_detail.insurance_number });
+                const data_kunjungan = Object.assign(Object.assign({}, visit !== null && visit !== void 0 ? visit : null), { cara_pembayaran: (_a = SimulationData.payment_method) !== null && _a !== void 0 ? _a : null, nomer_asuransi: (_b = patient_detail.insurance_number) !== null && _b !== void 0 ? _b : null });
                 return {
                     data_kunjungan,
-                    data_rujukan: referral,
-                    data_sep: sep,
-                    dokumen: document,
+                    data_rujukan: referral !== null && referral !== void 0 ? referral : null,
+                    data_sep: sep !== null && sep !== void 0 ? sep : null,
+                    dokumen: document !== null && document !== void 0 ? document : null,
                 };
             }
             catch (error) {
@@ -225,14 +227,14 @@ class ComponentService {
             var _a, _b;
             try {
                 const simulation_data = yield data_source_1.AppDataSource.getRepository(Simulation_entity_1.Simulation).findOneOrFail({ where: { id: simulation_id } });
-                const patient = yield data_source_1.AppDataSource.getRepository(Patient_entity_1.Patient).findOneByOrFail({ simulation_id: simulation_id });
-                const patient_detail = yield data_source_1.AppDataSource.getRepository(PatientDetail_entity_1.PatientDetail).findOneByOrFail({ patient_id: patient.id });
-                const inpatientRecord = yield data_source_1.AppDataSource.getRepository(InpatientRecord_entity_1.InpatientRecord).findOneByOrFail({ patient_id: patient.id });
-                const responsiblePerson = yield data_source_1.AppDataSource.getRepository(ResponsiblePerson_entity_1.ResponsiblePerson).findOneByOrFail({ patient_id: patient.id });
+                const patient = yield data_source_1.AppDataSource.getRepository(Patient_entity_1.Patient).findOneBy({ simulation_id: simulation_id });
+                const patient_detail = yield data_source_1.AppDataSource.getRepository(PatientDetail_entity_1.PatientDetail).findOneBy({ patient_id: patient.id });
+                const inpatientRecord = yield data_source_1.AppDataSource.getRepository(InpatientRecord_entity_1.InpatientRecord).findOneBy({ patient_id: patient.id });
+                const responsiblePerson = yield data_source_1.AppDataSource.getRepository(ResponsiblePerson_entity_1.ResponsiblePerson).findOneBy({ patient_id: patient.id });
                 const health_information_patients = yield data_source_1.AppDataSource.getRepository(HealthInformationPatient_entity_1.HealthInformationPatient).findBy({ patient_id: patient.id });
-                const value_belief = yield data_source_1.AppDataSource.getRepository(ValueBelief_entity_1.ValueBelief).findOneByOrFail({ patient_id: patient.id });
+                const value_belief = yield data_source_1.AppDataSource.getRepository(ValueBelief_entity_1.ValueBelief).findOneBy({ patient_id: patient.id });
                 const privacy_request = yield data_source_1.AppDataSource.getRepository(PrivacyRequest_entity_1.PrivacyRequest).findOneBy({ patient_id: patient.id });
-                const documentData = yield data_source_1.AppDataSource.getRepository(DocumentPatient_entity_1.DocumentPatient).findOneByOrFail({ simulation_id: simulation_id });
+                const documentData = yield data_source_1.AppDataSource.getRepository(DocumentPatient_entity_1.DocumentPatient).findOneBy({ simulation_id: simulation_id });
                 const data_rawat_inap = Object.assign(Object.assign({}, inpatientRecord !== null && inpatientRecord !== void 0 ? inpatientRecord : null), { cara_pembayaran: (_a = simulation_data.payment_method) !== null && _a !== void 0 ? _a : null, nomer_asuransi: (_b = patient_detail.insurance_number) !== null && _b !== void 0 ? _b : null });
                 return {
                     data_rawat_inap: data_rawat_inap !== null && data_rawat_inap !== void 0 ? data_rawat_inap : null,
@@ -265,7 +267,7 @@ class ComponentService {
             }
         });
     }
-    static updatePatient(simulation_id, data) {
+    static updatePatient(scenario_id, data) {
         return __awaiter(this, void 0, void 0, function* () {
             const { patient, patient_detail, value_belief, privacy_request, family_members, } = data;
             const patientRepo = data_source_1.AppDataSource.getRepository(Patient_entity_1.Patient);
@@ -273,12 +275,13 @@ class ComponentService {
             const valueBeliefRepo = data_source_1.AppDataSource.getRepository(ValueBelief_entity_1.ValueBelief);
             const privacyRequestRepo = data_source_1.AppDataSource.getRepository(PrivacyRequest_entity_1.PrivacyRequest);
             const healthInfoRepo = data_source_1.AppDataSource.getRepository(HealthInformationPatient_entity_1.HealthInformationPatient);
-            const existingPatient = yield patientRepo.findOneBy({ simulation_id });
+            const scenario = yield data_source_1.AppDataSource.getRepository(Scenario_entity_1.Scenario).findOneByOrFail({ id: scenario_id });
+            const existingPatient = yield patientRepo.findOneBy({ simulation_id: scenario.simulation_id });
             if (!existingPatient) {
                 throw new Error("Patient not found for update.");
             }
             // Update patient core data
-            yield patientRepo.update({ simulation_id: simulation_id }, patient);
+            yield patientRepo.update({ simulation_id: scenario.simulation_id }, patient);
             // Update or create patient_detail
             if (patient_detail) {
                 const existingDetail = yield patientDetailRepo.findOneBy({ patient_id: existingPatient.id });
@@ -333,7 +336,7 @@ class ComponentService {
                     }
                 }
             }
-            const updatedPatient = yield patientRepo.findOneBy({ simulation_id });
+            const updatedPatient = yield patientRepo.findOneBy({ simulation_id: scenario.simulation_id });
             const updatedDetail = yield patientDetailRepo.findOneBy({ patient_id: patient.id });
             const updatedValueBelief = yield valueBeliefRepo.findOneBy({ patient_id: patient.id });
             const updatedPrivacyRequest = yield privacyRequestRepo.findOneBy({ patient_id: patient.id });

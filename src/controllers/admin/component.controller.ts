@@ -58,24 +58,24 @@ export class ComponentController {
     static async update(req: Request, res: Response): Promise<void> {
         try {
             const type = req.params.type;
-            const simulation_id = parseInt(req.params.simulation_id);
+            const scenario_id = parseInt(req.params.scenario_id);
 
             if (type == "pendaftaran") {
                 const patientData: CreatePatientInput = req.body
-                const savedPatient = await ComponentService.updatePatient(simulation_id, patientData);
+                const savedPatient = await ComponentService.updatePatient(scenario_id, patientData);
                 res.status(201).json({ message: "Patient successfully updated", savedPatient });
             } else if (type == "admission-rawat-jalan") {
                 const admissionData: CreateAdmissionOutPatientInput = req.body
-                const admission = await ComponentService.updateAdmissionOutPatient(simulation_id, admissionData);
+                const admission = await ComponentService.updateAdmissionOutPatient(scenario_id, admissionData);
                 res.status(201).json({ message: "Patient successfully updated", data: admission });
             } else if (type == "admission-rawat-inap") {
                 const admissionData: CreateAdmissionInPatientInput = req.body
-                const admission = await ComponentService.updateAdmissionInpatient(simulation_id, admissionData);
+                const admission = await ComponentService.updateAdmissionInpatient(scenario_id, admissionData);
                 res.status(201).json({ message: "Patient successfully updated", data: admission });
             } else if (type == "admission-gawat-darurat") {
                 const admissionDataIGD: CreateAdmissionIGDPatientInput = req.body
                 console.log("admissionData", admissionDataIGD);
-                const admission = await ComponentService.updateAdmissionIGDPatient(simulation_id, admissionDataIGD);
+                const admission = await ComponentService.updateAdmissionIGDPatient(scenario_id, admissionDataIGD);
                 res.status(201).json({ message: "Data successfully updated", data: admission });
             }
         } catch (e) {

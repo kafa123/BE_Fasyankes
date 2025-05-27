@@ -41,10 +41,10 @@ class ScenarioUserController {
     static getOne(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const order = parseInt(req.params.id);
+                const scenario_id = parseInt(req.params.id);
                 const scenarioRepo = data_source_1.AppDataSource.getRepository(Scenario_entity_1.Scenario);
                 const answerRepo = data_source_1.AppDataSource.getRepository(Answer_entity_1.Answer);
-                const scenario = yield scenarioRepo.findOneBy({ order });
+                const scenario = yield scenarioRepo.findOneBy({ id: scenario_id });
                 if (!scenario) {
                     res.status(404).json({ error: "Scenario not found" });
                     return;

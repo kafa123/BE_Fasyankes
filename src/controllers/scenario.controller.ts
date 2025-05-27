@@ -34,12 +34,12 @@ export class ScenarioUserController {
 
 static async getOne(req: Request, res: Response): Promise<void> {
   try {
-    const order = parseInt(req.params.id);
+    const scenario_id = parseInt(req.params.id);
 
     const scenarioRepo = AppDataSource.getRepository(Scenario);
     const answerRepo = AppDataSource.getRepository(Answer);
 
-    const scenario = await scenarioRepo.findOneBy({ order });
+    const scenario = await scenarioRepo.findOneBy({ id:scenario_id });
 
     if (!scenario) {
       res.status(404).json({ error: "Scenario not found" });

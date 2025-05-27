@@ -23,7 +23,7 @@ Router.get(
 )
 
 Router.put(
-  "/update-component/:type/:simulation_id",
+  "/update-component/:type/:scenario_id",
   authentification,
   authorization(["admin"]),
   ComponentController.update

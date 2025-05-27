@@ -13,6 +13,7 @@ import { DocumentPatient } from "../entity/DocumentPatient.entity";
 import { InpatientRecord } from "../entity/InpatientRecord.entity";
 import { ResponsiblePerson } from "../entity/ResponsiblePerson.entity";
 import { Simulation } from "../entity/Simulation.entity";
+import { Scenario } from "../entity/Scenario.entity";
 
 export interface CreatePatientInput {
   patient: any;
@@ -265,7 +266,7 @@ export class ComponentService {
 
     const patient = await patientRepo.findOneBy({ simulation_id });
     if (!patient) {
-      throw new Error("Patient not found");
+      return null;
     }
 
     const patient_detail = await patientDetailRepo.findOneBy({ patient_id: patient.id });
@@ -274,7 +275,7 @@ export class ComponentService {
     const health_information_patients = await healthInfoRepo.findBy({ patient_id: patient.id });
 
     return {
-      data: patient,
+      data: patient ?? null,
       patient_detail: patient_detail ?? null,
       value_belief: value_belief ?? null,
       privacy_request: privacy_request ?? null,
@@ -286,24 +287,24 @@ export class ComponentService {
     try {
       const SimulationData = await AppDataSource.getRepository(Simulation).findOneOrFail({ where: { id: simulation_id } });
 
-      const patient = await AppDataSource.getRepository(Patient).findOneByOrFail({ simulation_id });
-      const patient_detail = await AppDataSource.getRepository(PatientDetail).findOneByOrFail({ patient_id: patient.id });
+      const patient = await AppDataSource.getRepository(Patient).findOneBy({ simulation_id });
+      const patient_detail = await AppDataSource.getRepository(PatientDetail).findOneBy({ patient_id: patient.id });
       const visit = await AppDataSource.getRepository(PatientVisitData).findOneBy({ patient_id: patient.id });
       const referral = await AppDataSource.getRepository(PatientReferralData).findOneBy({ patient_id: patient.id });
       const sep = await AppDataSource.getRepository(SepData).findOneBy({ patient_id: patient.id });
       const document = await AppDataSource.getRepository(DocumentPatient).findOneBy({ simulation_id });
 
       const data_kunjungan = {
-        ...visit,
-        cara_pembayaran: SimulationData.payment_method,
-        nomer_asuransi: patient_detail.insurance_number,
+        ...visit ?? null,
+        cara_pembayaran: SimulationData.payment_method ?? null,
+        nomer_asuransi: patient_detail.insurance_number ?? null,
       };
 
       return {
         data_kunjungan,
-        data_rujukan: referral,
-        data_sep: sep,
-        dokumen: document,
+        data_rujukan: referral ?? null,
+        data_sep: sep ?? null,
+        dokumen: document ?? null,
       };
     } catch (error) {
       throw new Error(`Failed to get admission data: ${error.message}`);
@@ -313,15 +314,15 @@ export class ComponentService {
   static async getAdmissionInpatient(simulation_id: number) {
     try {
       const simulation_data = await AppDataSource.getRepository(Simulation).findOneOrFail({ where: { id: simulation_id } });
-      const patient = await AppDataSource.getRepository(Patient).findOneByOrFail({ simulation_id: simulation_id });
-      const patient_detail = await AppDataSource.getRepository(PatientDetail).findOneByOrFail({ patient_id: patient.id });
+      const patient = await AppDataSource.getRepository(Patient).findOneBy({ simulation_id: simulation_id });
+      const patient_detail = await AppDataSource.getRepository(PatientDetail).findOneBy({ patient_id: patient.id });
 
-      const inpatientRecord = await AppDataSource.getRepository(InpatientRecord).findOneByOrFail({ patient_id: patient.id });
-      const responsiblePerson = await AppDataSource.getRepository(ResponsiblePerson).findOneByOrFail({ patient_id: patient.id });
+      const inpatientRecord = await AppDataSource.getRepository(InpatientRecord).findOneBy({ patient_id: patient.id });
+      const responsiblePerson = await AppDataSource.getRepository(ResponsiblePerson).findOneBy({ patient_id: patient.id });
       const health_information_patients = await AppDataSource.getRepository(HealthInformationPatient).findBy({ patient_id: patient.id });
-      const value_belief = await AppDataSource.getRepository(ValueBelief).findOneByOrFail({ patient_id: patient.id });
+      const value_belief = await AppDataSource.getRepository(ValueBelief).findOneBy({ patient_id: patient.id });
       const privacy_request = await AppDataSource.getRepository(PrivacyRequest).findOneBy({ patient_id: patient.id });
-      const documentData = await AppDataSource.getRepository(DocumentPatient).findOneByOrFail({ simulation_id: simulation_id });
+      const documentData = await AppDataSource.getRepository(DocumentPatient).findOneBy({ simulation_id: simulation_id });
 
       const data_rawat_inap = {
         ...inpatientRecord ?? null,
@@ -364,7 +365,7 @@ export class ComponentService {
     }
   }
 
-  static async updatePatient(simulation_id: number, data: CreatePatientInput) {
+  static async updatePatient(scenario_id: number, data: CreatePatientInput) {
     const {
       patient,
       patient_detail,
@@ -378,14 +379,15 @@ export class ComponentService {
     const valueBeliefRepo = AppDataSource.getRepository(ValueBelief);
     const privacyRequestRepo = AppDataSource.getRepository(PrivacyRequest);
     const healthInfoRepo = AppDataSource.getRepository(HealthInformationPatient);
+    const scenario = await AppDataSource.getRepository(Scenario).findOneByOrFail({id:scenario_id})
 
-    const existingPatient = await patientRepo.findOneBy({ simulation_id });
+    const existingPatient = await patientRepo.findOneBy({ simulation_id:scenario.simulation_id });
     if (!existingPatient) {
       throw new Error("Patient not found for update.");
     }
 
     // Update patient core data
-    await patientRepo.update({ simulation_id: simulation_id }, patient);
+    await patientRepo.update({ simulation_id: scenario.simulation_id }, patient);
 
     // Update or create patient_detail
     if (patient_detail) {
@@ -445,7 +447,7 @@ export class ComponentService {
       }
     }
 
-    const updatedPatient = await patientRepo.findOneBy({ simulation_id });
+    const updatedPatient = await patientRepo.findOneBy({ simulation_id:scenario.simulation_id });
     const updatedDetail = await patientDetailRepo.findOneBy({ patient_id: patient.id });
     const updatedValueBelief = await valueBeliefRepo.findOneBy({ patient_id: patient.id });
     const updatedPrivacyRequest = await privacyRequestRepo.findOneBy({ patient_id: patient.id });

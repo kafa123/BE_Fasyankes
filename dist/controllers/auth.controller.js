@@ -203,7 +203,7 @@ class AuthController {
                 res.status(200).json({ message: 'Password reset link sent' });
             }
             catch (error) {
-                res.status(500).json({ error: "Internal Server Error" });
+                res.status(500).json({ error: "Internal Server Error", message: error.message });
                 return;
             }
         });
