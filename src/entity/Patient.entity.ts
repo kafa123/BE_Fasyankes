@@ -54,6 +54,9 @@ export class Patient {
   @Column({ nullable: true })
   address: string;
 
+  @Column({ nullable:false})
+  nationality:string;
+
   @Column({ nullable: false })
   province: string;
 

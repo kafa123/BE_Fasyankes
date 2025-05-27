@@ -34,6 +34,12 @@ class Patients1743056790110 {
                         isNullable: false,
                     },
                     {
+                        name: "nationality",
+                        type: "enum",
+                        enum: ["WNI", "WNA"],
+                        isNullable: false
+                    },
+                    {
                         name: "name",
                         type: "varchar",
                         length: "100",
