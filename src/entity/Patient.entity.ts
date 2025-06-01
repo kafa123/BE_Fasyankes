@@ -7,6 +7,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Unique,
+  ManyToOne,
+  OneToMany,
 } from "typeorm";
 import { Simulation } from "./Simulation.entity";
 import { ValueBelief } from "./ValueBelief.entity";
@@ -82,7 +84,7 @@ export class Patient {
   @OneToOne(() => PrivacyRequest, (privacyRequest) => privacyRequest.patient)
   privacyRequest: PrivacyRequest;
 
-  @OneToOne(() => HealthInformationPatient, (healthInformationPatient) => healthInformationPatient.patient)
+  @OneToMany(() => HealthInformationPatient, (healthInformationPatient) => healthInformationPatient.patient)
   healthInformationPatient: HealthInformationPatient;
 
   @OneToOne(() => PatientDetail, (patientDetail) => patientDetail.patient)

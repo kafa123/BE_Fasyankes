@@ -41,12 +41,26 @@ class ScenarioUserController {
     static getOne(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const scenario_id = parseInt(req.params.id);
+                const id = req.query.id ? parseInt(req.query.id) : undefined;
+                const simulation_id = req.query.simulation_id ? parseInt(req.query.simulation_id) : undefined;
+                const order = req.query.order ? parseInt(req.query.order) : undefined;
                 const scenarioRepo = data_source_1.AppDataSource.getRepository(Scenario_entity_1.Scenario);
                 const answerRepo = data_source_1.AppDataSource.getRepository(Answer_entity_1.Answer);
-                const scenario = yield scenarioRepo.findOneBy({ id: scenario_id });
+                let scenario = null;
+                if (id) {
+                    scenario = yield scenarioRepo.findOneBy({ id });
+                }
+                else if (simulation_id && order) {
+                    scenario = yield scenarioRepo.findOneBy({ simulation_id: simulation_id, order: order });
+                }
+                else {
+                    res.status(400).json({
+                        error: "Provide either 'id' (as param) or both 'simulation_id' and 'order' (as query params)"
+                    });
+                    return;
+                }
                 if (!scenario) {
-                    res.status(404).json({ error: "Scenario not found" });
+                    res.status(200).json({ error: "Scenario not found" });
                     return;
                 }
                 const simulation = yield data_source_1.AppDataSource.getRepository(Simulation_entity_1.Simulation).findOneByOrFail({
@@ -72,8 +86,8 @@ class ScenarioUserController {
                 }
                 res.status(200).json({
                     data: scenario,
-                    answer: answer,
-                    component: component
+                    answer,
+                    component
                 });
             }
             catch (e) {

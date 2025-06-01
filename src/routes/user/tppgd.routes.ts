@@ -17,7 +17,7 @@ Router.get("/get-simulation/:id",
     authorization(["user"]),
     UserTPPGDSimulationController.getOne);
 
-Router.get("/get-Scenario/:id",ScenarioUserController.getOne)
+Router.get("/get-Scenario/",ScenarioUserController.getOne)
 Router.get("/get-All-Scenario/:id", ScenarioUserController.getAll)
 
 export { Router as UserTPPGDRouter };

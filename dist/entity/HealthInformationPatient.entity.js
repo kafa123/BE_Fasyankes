@@ -44,7 +44,7 @@ __decorate([
     __metadata("design:type", Date)
 ], HealthInformationPatient.prototype, "updatedAt", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => Patient_entity_1.Patient, (patient) => patient.healthInformationPatient, { onDelete: "CASCADE" }),
+    (0, typeorm_1.ManyToOne)(() => Patient_entity_1.Patient, (patient) => patient.healthInformationPatient, { onDelete: "CASCADE" }),
     (0, typeorm_1.JoinColumn)({ name: "patient_id" }),
     __metadata("design:type", Patient_entity_1.Patient)
 ], HealthInformationPatient.prototype, "patient", void 0);

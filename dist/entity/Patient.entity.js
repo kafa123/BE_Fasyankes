@@ -103,7 +103,7 @@ __decorate([
     __metadata("design:type", PrivacyRequest_entity_1.PrivacyRequest)
 ], Patient.prototype, "privacyRequest", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => HealthInformationPatient_entity_1.HealthInformationPatient, (healthInformationPatient) => healthInformationPatient.patient),
+    (0, typeorm_1.OneToMany)(() => HealthInformationPatient_entity_1.HealthInformationPatient, (healthInformationPatient) => healthInformationPatient.patient),
     __metadata("design:type", HealthInformationPatient_entity_1.HealthInformationPatient)
 ], Patient.prototype, "healthInformationPatient", void 0);
 __decorate([

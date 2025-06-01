@@ -6,6 +6,8 @@ import {
     PrimaryGeneratedColumn,
     CreateDateColumn,
     UpdateDateColumn,
+    OneToMany,
+    ManyToOne,
   } from "typeorm";
 import { Patient } from "./Patient.entity";
 
@@ -32,7 +34,7 @@ export class HealthInformationPatient {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToOne(() => Patient, (patient) => patient.healthInformationPatient, { onDelete: "CASCADE" })
+  @ManyToOne(() => Patient, (patient) => patient.healthInformationPatient, { onDelete: "CASCADE" })
   @JoinColumn({ name: "patient_id" })
   patient: Patient;
 

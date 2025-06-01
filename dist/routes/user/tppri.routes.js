@@ -10,6 +10,6 @@ const Router = express.Router();
 exports.UserTPPRIRouter = Router;
 Router.get("/get-all-simulation", authentification_1.authentification, (0, authorization_1.authorization)(["user"]), tppri_simulation_controller_1.UserTPPRISimulationController.getAll);
 Router.get("/get-simulation/:id", authentification_1.authentification, (0, authorization_1.authorization)(["user"]), tppri_simulation_controller_1.UserTPPRISimulationController.getOne);
-Router.get("/get-Scenario/:id", scenario_controller_1.ScenarioUserController.getOne);
+Router.get("/get-Scenario/", scenario_controller_1.ScenarioUserController.getOne);
 Router.get("/get-All-Scenario/:id", scenario_controller_1.ScenarioUserController.getAll);
 //# sourceMappingURL=tppri.routes.js.map
