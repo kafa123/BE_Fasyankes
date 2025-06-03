@@ -351,13 +351,13 @@ export class ComponentService {
       const patientVisitIGD = await AppDataSource.getRepository(PatientVisitIGD).findOneByOrFail({ simulation_id: simulation_id });
       const documentData = await AppDataSource.getRepository(DocumentPatient).findOneByOrFail({ simulation_id: simulation_id });
 
-      const visitIGDRecord = {
+      const visitIGD = {
         ...patientVisitIGD ?? null,
         payment_method: simulation_data.payment_method
       }
 
       return {
-        visitIGDRecord,
+        visitIGD,
         documentData: documentData ?? null
       };
     } catch (error) {

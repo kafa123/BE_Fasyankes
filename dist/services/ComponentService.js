@@ -256,9 +256,9 @@ class ComponentService {
                 const simulation_data = yield data_source_1.AppDataSource.getRepository(Simulation_entity_1.Simulation).findOneByOrFail({ id: simulation_id });
                 const patientVisitIGD = yield data_source_1.AppDataSource.getRepository(PatientVisitIGDData_entity_1.PatientVisitIGD).findOneByOrFail({ simulation_id: simulation_id });
                 const documentData = yield data_source_1.AppDataSource.getRepository(DocumentPatient_entity_1.DocumentPatient).findOneByOrFail({ simulation_id: simulation_id });
-                const visitIGDRecord = Object.assign(Object.assign({}, patientVisitIGD !== null && patientVisitIGD !== void 0 ? patientVisitIGD : null), { payment_method: simulation_data.payment_method });
+                const visitIGD = Object.assign(Object.assign({}, patientVisitIGD !== null && patientVisitIGD !== void 0 ? patientVisitIGD : null), { payment_method: simulation_data.payment_method });
                 return {
-                    visitIGDRecord,
+                    visitIGD,
                     documentData: documentData !== null && documentData !== void 0 ? documentData : null
                 };
             }

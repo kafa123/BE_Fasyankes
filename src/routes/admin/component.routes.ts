@@ -32,7 +32,7 @@ Router.delete(
   "/delete-component/:type/:simulation_id",
   authentification,
   authorization(["admin"]),
-  AdmissionController.delete
+  ComponentController.delete
 )
 
 
